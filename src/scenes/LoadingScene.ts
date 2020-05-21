@@ -90,48 +90,26 @@ export class LoadingScene extends Scene {
     }
 
     private preloadAllAssets() {
-        this.load.image("house1", "./assets/images/house1.png");
-        this.load.image("house2", "./assets/images/house2.png");
-        this.load.image("board", "./assets/images/board.png");
-        this.load.image("postit", "./assets/images/postit.png");
-        this.load.image("peach-bg", "./assets/images/peach-bg.png");
-        this.load.image("field", "./assets/images/field.png");
-        this.load.image("wood", "./assets/images/wood.png");
-        this.load.image("stone", "./assets/images/stone.png");
-        this.load.image("food", "./assets/images/food.png");
-        this.load.image("crops", "./assets/images/crops.png");
-        this.load.image("citizen", "./assets/images/citizen.png");
-        this.load.spritesheet("windmill", "./assets/images/windmill.png", {
-            frameWidth: 24,
-            frameHeight: 32,
-        });
-        this.load.spritesheet("tree", "./assets/images/tree-5-pics.png", {
-            frameWidth: 16,
-        });
-        this.load.image(
-            "postit-two-pins",
-            "./assets/images/postit-two-pins.png"
-        );
-        this.load.spritesheet(
-            "plus-button",
-            "./assets/images/plus-button.png",
-            { frameWidth: 16, frameHeight: 16 }
-        );
-        this.load.spritesheet(
-            "minus-button",
-            "./assets/images/minus-button.png",
-            { frameWidth: 16, frameHeight: 16 }
-        );
-        this.load.image(
-            "world",
-            "./assets/images/earthbound-scarab-do-not-upload.png"
-        );
-        // this.load.audio("background", "./assets/sounds/bgm.mp3");
+        const withImagePath = (filename: string) =>
+            `./assets/images/${filename}`;
+        this.load
+            .spritesheet("player", withImagePath("player.png"), {
+                frameWidth: 16,
+                frameHeight: 16,
+            })
+            .spritesheet("enemy", withImagePath("tree-5-pics.png"), {
+                frameWidth: 16,
+            })
+            .image("bullet", withImagePath("citizen.png"))
+            .image(
+                "world",
+                withImagePath("earthbound-scarab-do-not-upload.png")
+            );
     }
 
     private addTitles() {
         const title = this.add
-            .text(this.halfWidth, this.halfHeight - 200, "Fursorger")
+            .text(this.halfWidth, this.halfHeight - 200, "Hold the bridge!")
             .setOrigin(0.5);
         setDefaultTextStyle(title);
         title.setFontSize(112);
@@ -141,7 +119,7 @@ export class LoadingScene extends Scene {
             .text(
                 this.halfWidth,
                 this.halfHeight - 120,
-                "This world is dying. Can you save us?"
+                "How long can you defend your home?"
             )
             .setOrigin(0.5);
         setDefaultTextStyle(subtitle);
