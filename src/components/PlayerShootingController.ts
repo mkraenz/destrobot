@@ -39,10 +39,10 @@ export class PlayerShootingController {
             vel: this.dir,
             speed: 500,
             ttl: 300,
+            damage: 1,
         });
         this.bullets.add(bullet);
         bullet.create();
-        console.log(this.bullets.children);
     }
 
     private nextPos() {

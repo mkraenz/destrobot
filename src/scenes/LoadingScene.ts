@@ -104,7 +104,10 @@ export class LoadingScene extends Scene {
             .image(
                 "world",
                 withImagePath("earthbound-scarab-do-not-upload.png")
-            );
+            )
+            .image("heart", withImagePath("heart.png"))
+            .tilemapTiledJSON("map", "./assets/maps/map.json")
+            .image("tiles", "./assets/images/tileset.png");
     }
 
     private addTitles() {

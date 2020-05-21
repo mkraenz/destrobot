@@ -2,6 +2,8 @@ import { Math, Physics, Scene } from "phaser";
 import { IPoint } from "../utils/IPoint";
 
 export class Bullet extends Physics.Arcade.Sprite {
+    public readonly damage: number;
+
     constructor(
         scene: Scene,
         private cfg: {
@@ -9,11 +11,13 @@ export class Bullet extends Physics.Arcade.Sprite {
             vel: Math.Vector2;
             ttl: number;
             speed: number;
+            damage: number;
         }
     ) {
         super(scene, cfg.pos.x, cfg.pos.y, "bullet");
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.damage = cfg.damage;
     }
 
     public create() {
@@ -23,5 +27,10 @@ export class Bullet extends Physics.Arcade.Sprite {
         this.setRotation(vel.angle());
         this.setBounce(1);
         setTimeout(() => this.destroy(), this.cfg.ttl);
+    }
+
+    public setHit() {
+        this.setActive(false);
+        this.disableBody();
     }
 }

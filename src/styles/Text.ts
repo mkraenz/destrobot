@@ -7,7 +7,7 @@ export const TextConfig: { [key: string]: Style } = {
     xl: {
         fontFamily: "Metamorphous",
         fontSize: "32px",
-        color: "#000000",
+        color: Color.White,
     },
     lg: {
         fontFamily: "Metamorphous",

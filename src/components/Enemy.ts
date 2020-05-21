@@ -1,19 +1,29 @@
 import { GameObjects, Physics, Scene } from "phaser";
+import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
 
 const MIN_DISTANCE_TO_TARGET = 5;
 const SPEED = 50;
 
 export class Enemy extends Physics.Arcade.Sprite {
+    public health: number;
+
     constructor(
         scene: Scene,
         x: number,
         y: number,
-        private target: GameObjects.Sprite
+        private target: GameObjects.Sprite,
+        cfg: {
+            health: number;
+        }
     ) {
         super(scene, x, y, "enemy");
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.health = cfg.health;
+    }
+
+    public create() {
         this.setCollideWorldBounds(true);
         this.setBounce(10);
     }
@@ -31,6 +41,9 @@ export class Enemy extends Physics.Arcade.Sprite {
 
     public update() {
         this.move(this.target);
+        if (this.health <= 0) {
+            this.die();
+        }
     }
 
     public isCloseToTarget() {
@@ -41,14 +54,20 @@ export class Enemy extends Physics.Arcade.Sprite {
         return dist < MIN_DISTANCE_TO_TARGET;
     }
 
-    public dist(other: IPoint) {
-        return Phaser.Math.Distance.Between(this.x, this.y, other.x, other.y);
-    }
-
     public die() {
-        console.log("die");
+        this.scene.events.emit("enemy-killed");
         this.setActive(false);
         this.disableBody(true);
         this.setVisible(false);
+    }
+
+    public getHit(damage: number) {
+        this.health -= damage;
+        this.setTint(toHex(Color.Red));
+        setTimeout(() => this.clearTint(), 200);
+    }
+
+    private dist(other: IPoint) {
+        return Phaser.Math.Distance.Between(this.x, this.y, other.x, other.y);
     }
 }

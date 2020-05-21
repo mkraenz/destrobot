@@ -1,5 +1,5 @@
 import { random } from "lodash";
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Physics, Scene } from "phaser";
 import { IPoint } from "../utils/IPoint";
 import { Enemy } from "./Enemy";
 
@@ -18,9 +18,25 @@ export class EnemySpawner {
                     this.scene,
                     this.at.x + random(100),
                     this.at.y + random(100),
-                    this.target
+                    this.target,
+                    { health: 5 }
                 );
+                enemy.create();
                 return enemy;
             });
+    }
+
+    public spawnInterval(
+        entitiesPerWave: number,
+        timeout: number,
+        group: Physics.Arcade.Group,
+        addEntities: (entity: Physics.Arcade.Sprite) => void
+    ) {
+        setInterval(() => {
+            const entities = this.spawn(entitiesPerWave);
+            entities.forEach(e => addEntities(e));
+            group.addMultiple(entities);
+            entities.forEach(e => e.create());
+        }, timeout);
     }
 }

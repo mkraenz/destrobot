@@ -1,4 +1,6 @@
 import { Physics, Scene } from "phaser";
+import { Color, toHex } from "../styles/Color";
+import { PlayerLevelController } from "./PlayerLevelController";
 import { PlayerMovementController } from "./PlayerMovementController";
 import { PlayerShootingController } from "./PlayerShootingController";
 
@@ -12,6 +14,7 @@ export class Player extends Physics.Arcade.Sprite {
     private xWasHit = false;
     private movementController: PlayerMovementController;
     private shootingController: PlayerShootingController;
+    private levelController: PlayerLevelController;
     private health = 3;
     private xInvincible = false;
 
@@ -35,6 +38,10 @@ export class Player extends Physics.Arcade.Sprite {
             this,
             { x: 10, y: 0 },
             bullets
+        );
+        this.levelController = new PlayerLevelController(
+            this.scene,
+            this.movementController
         );
         this.setCollideWorldBounds(true);
         this.setBounce(2);
@@ -68,6 +75,11 @@ export class Player extends Physics.Arcade.Sprite {
     public update() {
         if (this.health === 0) {
             this.die();
+        }
+        if (this.wasHit) {
+            this.setTint(toHex(Color.Red));
+        } else {
+            this.clearTint();
         }
         this.movementController.update();
         this.shootingController.update();

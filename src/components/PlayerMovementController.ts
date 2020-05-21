@@ -2,8 +2,6 @@ import { Input, Physics, Scene } from "phaser";
 
 type Key = Input.Keyboard.Key;
 
-const SPEED = 200;
-
 export class PlayerMovementController {
     private keys: {
         up: Key;
@@ -12,6 +10,7 @@ export class PlayerMovementController {
         right: Key;
     };
     private enabled = true;
+    private speed = 200;
 
     constructor(
         scene: Scene,
@@ -25,6 +24,14 @@ export class PlayerMovementController {
         const down = addKey(KeyCodes.S);
         const right = addKey(KeyCodes.D);
         this.keys = { up, left, down, right };
+    }
+
+    public setSpeed(speed: number) {
+        this.speed = speed;
+    }
+
+    public getSpeed() {
+        return this.speed;
     }
 
     public disable() {
@@ -43,16 +50,16 @@ export class PlayerMovementController {
         const left = this.keys.left;
         const right = this.keys.right;
         if (up.isDown && down.isUp) {
-            this.setVelocityY(-SPEED);
+            this.setVelocityY(-this.speed);
         }
         if (down.isDown && up.isUp) {
-            this.setVelocityY(SPEED);
+            this.setVelocityY(this.speed);
         }
         if (left.isDown && right.isUp) {
-            this.setVelocityX(-SPEED);
+            this.setVelocityX(-this.speed);
         }
         if (right.isDown && left.isUp) {
-            this.setVelocityX(SPEED);
+            this.setVelocityX(this.speed);
         }
         if (right.isUp && left.isUp) {
             this.setVelocityX(0);
