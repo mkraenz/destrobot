@@ -1,3 +1,4 @@
+import { assign } from "lodash";
 import { Physics, Scene } from "phaser";
 import { Bullet } from "../components/Bullet";
 import { Enemy } from "../components/Enemy";
@@ -5,7 +6,8 @@ import { EnemySpawner } from "../components/EnemySpawner";
 import { IPowerUp } from "../components/IPowerUp";
 import { ItemDropper } from "../components/ItemDropper";
 import { Player } from "../components/Player";
-import { MachineGun } from "../components/weapons/MachineGun";
+import { Weapon } from "../components/weapons/Weapon";
+import { Level1 } from "../levels/Level1";
 import { HealthHud } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
 
@@ -14,6 +16,7 @@ type Group = Physics.Arcade.Group;
 const FADE_IN_TIME = 0;
 
 export class MainScene extends Scene {
+    private levelData!: typeof Level1;
     private player!: Player;
     private enemies!: Group;
     private playerBullets!: Group;
@@ -23,18 +26,40 @@ export class MainScene extends Scene {
         super({ key: "MainScene" });
     }
 
+    public init(level: typeof Level1) {
+        this.levelData = level;
+    }
+
     public create(): void {
-        const map = this.make.tilemap({ key: "map" });
-        const tileset = map.addTilesetImage("scifi-tileset", "tiles");
-        map.createStaticLayer("ground", tileset, 0, 0);
-        const walls = map.createStaticLayer("walls", tileset, 0, 0);
+        const lvl = this.levelData;
+        const map = this.make.tilemap({ key: lvl.map.key });
+        const tileset = map.addTilesetImage(
+            lvl.map.tilesetName,
+            lvl.map.tilesetKey
+        );
+        const mapLayers = lvl.map.layers.map(layerData => {
+            const mapLayer = map.createStaticLayer(
+                layerData.layerID,
+                tileset,
+                0,
+                0
+            );
+            return assign(mapLayer, layerData);
+        });
 
         this.playerBullets = this.physics.add.group([], {
             enable: true,
             active: true,
         });
-        const mg = new MachineGun(this, this.playerBullets);
-        this.player = new Player(this, 400, 400, mg);
+
+        const weaponData = this.levelData.weapons.find(
+            w => w.name === lvl.player.startWeapon
+        );
+        if (!weaponData) {
+            throw new Error("Could not parse level");
+        }
+        const mg = new Weapon(this, this.playerBullets, weaponData);
+        this.player = new Player(this, { ...lvl.player, weapon: mg });
 
         this.createCamera(map);
         this.cameras.main.fadeIn(FADE_IN_TIME);
@@ -80,9 +105,22 @@ export class MainScene extends Scene {
                 (enemy as Enemy).getHit(b.damage);
             }
         );
-        this.physics.add.collider(this.enemies, walls);
-        this.physics.add.collider(this.player, walls);
-        walls.setCollisionByProperty({ blocking: true }); // set as custom property in tiled
+        mapLayers.forEach(layer => {
+            if (layer.collideEnemies) {
+                this.physics.add.collider(this.enemies, layer);
+            }
+            if (layer.collidePlayer) {
+                this.physics.add.collider(this.player, layer);
+            }
+            if (layer.collideBullets) {
+                this.physics.add.collider(this.playerBullets, layer);
+            }
+            if (layer.collisionProperty) {
+                layer.setCollisionByProperty({
+                    [layer.collisionProperty]: true,
+                });
+            }
+        });
 
         spawner.spawnInterval(5, 3000);
         spawner2.spawnInterval(5, 3000);

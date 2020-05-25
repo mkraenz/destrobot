@@ -11,17 +11,18 @@ export const Level1 = {
                 collideBullets: false,
             },
             {
-                layerId: "walls",
+                layerID: "walls",
                 collidePlayer: true,
                 collideEnemies: true,
                 collideBullets: true,
+                collisionProperty: "blocking", // set as custom property in tiled
             },
         ],
     },
     weapons: [
         {
             name: "Pistol",
-            damage: 1,
+            damage: 5,
             bulletSpeed: 500,
             ttl: 300,
             cooldown: 500,
@@ -42,6 +43,10 @@ export const Level1 = {
         startWeapon: "Pistol",
         health: 3,
         maxHealth: 4,
+        hitInvicibilityTimeout: 800,
+        hitFreezeTimeout: 100,
+        texture: "player",
+        scale: 2,
     },
     enemies: [
         {

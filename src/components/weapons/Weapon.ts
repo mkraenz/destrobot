@@ -2,17 +2,31 @@ import { Physics, Scene } from "phaser";
 import { Bullet } from "../Bullet";
 import { IWeapon } from "../IWeapon";
 
-export abstract class Weapon implements IWeapon {
-    protected onCooldown = false;
-    protected abstract cooldown: number;
-    protected abstract bulletSpeed: number;
-    protected abstract ttl: number;
-    protected abstract damage: number;
+export class Weapon implements IWeapon {
+    private onCooldown = false;
+    private cooldown: number;
+    private bulletSpeed: number;
+    private ttl: number;
+    private damage: number;
+    private name: string;
 
     constructor(
-        protected scene: Scene,
-        protected bullets: Physics.Arcade.Group
-    ) {}
+        private scene: Scene,
+        private bullets: Physics.Arcade.Group,
+        cfg: {
+            cooldown: number;
+            bulletSpeed: number;
+            ttl: number;
+            damage: number;
+            name: string;
+        }
+    ) {
+        this.cooldown = cfg.cooldown;
+        this.bulletSpeed = cfg.bulletSpeed;
+        this.ttl = cfg.ttl;
+        this.damage = cfg.damage;
+        this.name = cfg.name;
+    }
 
     public shoot(pos: Phaser.Math.Vector2, dir: Phaser.Math.Vector2) {
         if (this.onCooldown) {
@@ -21,9 +35,9 @@ export abstract class Weapon implements IWeapon {
         const bullet = new Bullet(this.scene, {
             pos,
             vel: dir,
-            speed: 500,
-            ttl: 300,
-            damage: 1,
+            speed: this.bulletSpeed,
+            ttl: this.ttl,
+            damage: this.damage,
         });
         this.bullets.add(bullet);
         bullet.create();
@@ -31,7 +45,7 @@ export abstract class Weapon implements IWeapon {
         this.setCooldown();
     }
 
-    protected setCooldown() {
+    private setCooldown() {
         this.onCooldown = true;
         setTimeout(() => {
             this.onCooldown = false;

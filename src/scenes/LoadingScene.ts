@@ -1,4 +1,5 @@
 import { GameObjects, Scene } from "phaser";
+import { Level1 } from "../levels/Level1";
 import { Color, toHex } from "../styles/Color";
 import { setDefaultTextStyle } from "../styles/Text";
 import { MainScene } from "./MainScene";
@@ -59,7 +60,7 @@ export class LoadingScene extends Scene {
         this.load.on("fileprogress", this.getAssetTextWriter(assetText));
         this.load.on("complete", () => {
             this.cameras.main.once("camerafadeoutcomplete", (camera: any) => {
-                this.scene.add("MainScene", MainScene, true);
+                this.scene.add("MainScene", MainScene, true, Level1);
                 this.scene.remove("LoadingScene");
             });
             this.cameras.main.fadeOut(FADEOUT_TIME);

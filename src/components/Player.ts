@@ -5,9 +5,6 @@ import { PlayerLevelController } from "./PlayerLevelController";
 import { PlayerMovementController } from "./PlayerMovementController";
 import { PlayerShootingController } from "./PlayerShootingController";
 
-const hitFreezeTimeout = 100;
-const hitInvicibilityTimeout = 800;
-
 const DEAD = "dead";
 const IDLE = "idle";
 
@@ -25,14 +22,34 @@ export class Player extends Physics.Arcade.Sprite {
         return this.xInvincible;
     }
     private xWasHit = false;
+    private xInvincible = false;
+    private hitInvicibilityTimeout: number;
+    private hitFreezeTimeout: number;
     private movementController: IPlayerController;
     private shootingController: IPlayerController;
-    private health = 3;
-    private maxHealth = 4;
-    private xInvincible = false;
+    private health: number;
+    private maxHealth: number;
 
-    constructor(scene: Scene, x: number, y: number, weapon: IWeapon) {
-        super(scene, x, y, "player");
+    constructor(
+        scene: Scene,
+        cfg: {
+            health: number;
+            maxHealth: number;
+            hitInvicibilityTimeout: number;
+            hitFreezeTimeout: number;
+            texture: string;
+            x: number;
+            y: number;
+            weapon: IWeapon;
+            scale: number;
+        }
+    ) {
+        super(scene, cfg.x, cfg.y, cfg.texture);
+        this.health = cfg.health;
+        this.hitInvicibilityTimeout = cfg.hitInvicibilityTimeout;
+        this.hitFreezeTimeout = cfg.hitFreezeTimeout;
+        this.maxHealth = cfg.maxHealth;
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -41,12 +58,12 @@ export class Player extends Physics.Arcade.Sprite {
             this
         );
         this.movementController = movementController;
-        this.setScale(2);
+        this.setScale(cfg.scale);
         this.shootingController = new PlayerShootingController(
             this.scene,
             this,
             { x: 10, y: 0 },
-            weapon
+            cfg.weapon
         );
         new PlayerLevelController(this.scene, movementController);
         this.setCollideWorldBounds(true);
@@ -76,10 +93,10 @@ export class Player extends Physics.Arcade.Sprite {
         this.health--;
         setTimeout(() => {
             this.xWasHit = false;
-        }, hitFreezeTimeout);
+        }, this.hitFreezeTimeout);
         setTimeout(() => {
             this.xInvincible = false;
-        }, hitInvicibilityTimeout);
+        }, this.hitInvicibilityTimeout);
     }
 
     public update() {
