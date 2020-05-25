@@ -5,7 +5,7 @@ import { IWeapon } from "../IWeapon";
 export abstract class Weapon implements IWeapon {
     protected onCooldown = false;
     protected abstract cooldown: number;
-    protected abstract speed: number;
+    protected abstract bulletSpeed: number;
     protected abstract ttl: number;
     protected abstract damage: number;
 

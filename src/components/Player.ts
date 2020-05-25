@@ -17,10 +17,18 @@ interface IPlayerController {
 }
 
 export class Player extends Physics.Arcade.Sprite {
+    public get wasHit() {
+        return this.xWasHit;
+    }
+
+    public get invincible() {
+        return this.xInvincible;
+    }
     private xWasHit = false;
     private movementController: IPlayerController;
     private shootingController: IPlayerController;
     private health = 3;
+    private maxHealth = 4;
     private xInvincible = false;
 
     constructor(scene: Scene, x: number, y: number, weapon: IWeapon) {
@@ -45,14 +53,18 @@ export class Player extends Physics.Arcade.Sprite {
         this.setBounce(2);
         this.animate();
         this.play(IDLE);
+
+        this.scene.events.on("heart-collected", () =>
+            this.handleHeartCollected()
+        );
     }
 
-    public get wasHit() {
-        return this.xWasHit;
+    public getHealth() {
+        return this.health;
     }
 
-    public get invincible() {
-        return this.xInvincible;
+    public getMaxHealth() {
+        return this.maxHealth;
     }
 
     public onHit() {
@@ -83,6 +95,12 @@ export class Player extends Physics.Arcade.Sprite {
         this.shootingController.update();
 
         this.setRenderFlip();
+    }
+
+    private handleHeartCollected() {
+        if (this.health < this.maxHealth) {
+            this.health++;
+        }
     }
 
     private setRenderFlip() {

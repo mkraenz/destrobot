@@ -1,9 +1,11 @@
+import { random } from "lodash";
 import { GameObjects, Physics, Scene } from "phaser";
 import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
 
 const MIN_DISTANCE_TO_TARGET = 5;
 const SPEED = 50;
+const DROP_FREQUENCY = 5;
 
 export class Enemy extends Physics.Arcade.Sprite {
     public health: number;
@@ -55,6 +57,9 @@ export class Enemy extends Physics.Arcade.Sprite {
     }
 
     public die() {
+        if (random(DROP_FREQUENCY) === DROP_FREQUENCY) {
+            this.scene.events.emit("drop-item", { x: this.x, y: this.y });
+        }
         this.scene.events.emit("enemy-killed");
         this.setActive(false);
         this.disableBody(true);

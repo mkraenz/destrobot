@@ -7,7 +7,8 @@ export class EnemySpawner {
     constructor(
         private scene: Scene,
         private at: IPoint,
-        private target: GameObjects.Sprite
+        private target: GameObjects.Sprite,
+        private enemies: Physics.Arcade.Group
     ) {}
 
     public spawn(n: number) {
@@ -26,17 +27,10 @@ export class EnemySpawner {
             });
     }
 
-    public spawnInterval(
-        entitiesPerWave: number,
-        timeout: number,
-        group: Physics.Arcade.Group,
-        addEntities: (entity: Physics.Arcade.Sprite) => void
-    ) {
+    public spawnInterval(entitiesPerWave: number, timeout: number) {
         setInterval(() => {
             const entities = this.spawn(entitiesPerWave);
-            entities.forEach(e => addEntities(e));
-            group.addMultiple(entities);
-            entities.forEach(e => e.create());
+            this.enemies.addMultiple(entities, true);
         }, timeout);
     }
 }
