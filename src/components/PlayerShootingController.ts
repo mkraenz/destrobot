@@ -1,6 +1,6 @@
 import { Math, Physics, Scene } from "phaser";
 import { IPoint } from "../utils/IPoint";
-import { Bullet } from "./Bullet";
+import { IWeapon } from "./IWeapon";
 
 const Vec = Math.Vector2;
 type Vec = Math.Vector2;
@@ -9,16 +9,18 @@ export class PlayerShootingController {
     private pos: Vec;
     private dir: Vec;
     private enabled = true;
+    private isDown = false;
 
     constructor(
         private scene: Scene,
         private player: Physics.Arcade.Sprite,
         private playerOffset: IPoint,
-        private bullets: Physics.Arcade.Group
+        private weapon: IWeapon
     ) {
         this.pos = this.nextPos();
         this.dir = new Vec(1, 0);
-        scene.input.on("pointerdown", () => this.shoot());
+        scene.input.on("pointerdown", () => (this.isDown = true));
+        scene.input.on("pointerup", () => (this.isDown = false));
     }
 
     public disable() {
@@ -27,6 +29,9 @@ export class PlayerShootingController {
 
     public update() {
         this.pos = this.nextPos();
+        if (this.isDown) {
+            this.shoot();
+        }
     }
 
     private shoot() {
@@ -34,15 +39,7 @@ export class PlayerShootingController {
             return;
         }
         this.dir = this.nextDir();
-        const bullet = new Bullet(this.scene, {
-            pos: this.pos,
-            vel: this.dir,
-            speed: 500,
-            ttl: 300,
-            damage: 1,
-        });
-        this.bullets.add(bullet);
-        bullet.create();
+        this.weapon.shoot(this.pos, this.dir);
     }
 
     private nextPos() {

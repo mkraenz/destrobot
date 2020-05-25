@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
 import { PlayerMovementController } from "./PlayerMovementController";
 
-const SPEED_UP_FACTOR = 2;
+const SPEED_UP_FACTOR = 1.3;
 
 export class PlayerLevelController {
     private score = 0;

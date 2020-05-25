@@ -1,5 +1,6 @@
 import { Physics, Scene } from "phaser";
 import { Color, toHex } from "../styles/Color";
+import { IWeapon } from "./IWeapon";
 import { PlayerLevelController } from "./PlayerLevelController";
 import { PlayerMovementController } from "./PlayerMovementController";
 import { PlayerShootingController } from "./PlayerShootingController";
@@ -10,39 +11,36 @@ const hitInvicibilityTimeout = 800;
 const DEAD = "dead";
 const IDLE = "idle";
 
+interface IPlayerController {
+    update(): void;
+    disable(): void;
+}
+
 export class Player extends Physics.Arcade.Sprite {
     private xWasHit = false;
-    private movementController: PlayerMovementController;
-    private shootingController: PlayerShootingController;
-    private levelController: PlayerLevelController;
+    private movementController: IPlayerController;
+    private shootingController: IPlayerController;
     private health = 3;
     private xInvincible = false;
 
-    constructor(
-        scene: Scene,
-        x: number,
-        y: number,
-        bullets: Physics.Arcade.Group
-    ) {
+    constructor(scene: Scene, x: number, y: number, weapon: IWeapon) {
         super(scene, x, y, "player");
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.movementController = new PlayerMovementController(
+        const movementController = new PlayerMovementController(
             this.scene,
             this
         );
+        this.movementController = movementController;
         this.setScale(2);
         this.shootingController = new PlayerShootingController(
             this.scene,
             this,
             { x: 10, y: 0 },
-            bullets
+            weapon
         );
-        this.levelController = new PlayerLevelController(
-            this.scene,
-            this.movementController
-        );
+        new PlayerLevelController(this.scene, movementController);
         this.setCollideWorldBounds(true);
         this.setBounce(2);
         this.animate();

@@ -3,6 +3,8 @@ import { Bullet } from "../components/Bullet";
 import { Enemy } from "../components/Enemy";
 import { EnemySpawner } from "../components/EnemySpawner";
 import { Player } from "../components/Player";
+import { MachineGun } from "../components/weapons/MachineGun";
+import { Pistol } from "../components/weapons/Pistol";
 import { HealthHud } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
 
@@ -24,7 +26,9 @@ export class MainScene extends Scene {
         const walls = map.createStaticLayer("walls", tileset, 0, 0);
 
         this.playerBullets = this.physics.add.group();
-        this.player = new Player(this, 400, 400, this.playerBullets);
+        const pistol = new Pistol(this, this.playerBullets);
+        const mg = new MachineGun(this, this.playerBullets);
+        this.player = new Player(this, 400, 400, mg);
 
         this.createCamera(map);
         this.cameras.main.fadeIn(FADE_IN_TIME);
