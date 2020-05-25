@@ -97,8 +97,9 @@ export class LoadingScene extends Scene {
                 frameWidth: 16,
                 frameHeight: 16,
             })
-            .spritesheet("enemy", withImagePath("tree-5-pics.png"), {
-                frameWidth: 16,
+            .spritesheet("enemy", withImagePath("robot.png"), {
+                frameWidth: 28,
+                frameHeight: 32,
             })
             .image("bullet", withImagePath("citizen.png"))
             .image(
