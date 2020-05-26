@@ -14,6 +14,8 @@ import { ScoreHud } from "./hud/ScoreHud";
 type Group = Physics.Arcade.Group;
 
 const FADE_IN_TIME = 0;
+const CAMERA_SHAKE_INTENSITY = 0.005;
+const CAMERA_SHAKE_DURATION = 50;
 
 export class MainScene extends Scene {
     private levelData!: typeof Level1;
@@ -98,7 +100,10 @@ export class MainScene extends Scene {
             (player, enemy) => {
                 const hitApplied = this.player.onHit();
                 if (hitApplied) {
-                    this.cameras.main.shake(50, 0.005);
+                    this.cameras.main.shake(
+                        CAMERA_SHAKE_DURATION,
+                        CAMERA_SHAKE_INTENSITY
+                    );
                 }
             }
         );
@@ -108,8 +113,9 @@ export class MainScene extends Scene {
             this.playerBullets,
             (enemy, bullet) => {
                 const b = bullet as Bullet;
-                b.setHit();
+                b.onHit();
                 (enemy as Enemy).takeDamage(b.damage);
+                this.playerBullets.remove(b, true, true);
             }
         );
         mapLayers.forEach(layer => {

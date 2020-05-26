@@ -101,7 +101,8 @@ export class LoadingScene extends Scene {
                 frameWidth: 28,
                 frameHeight: 32,
             })
-            .image("bullet", imgPath("citizen.png"))
+            .image("bullet", imgPath("bullet.png"))
+            .image("bullet2", imgPath("bullet2.png"))
             .image("world", imgPath("earthbound-scarab-do-not-upload.png"))
             .spritesheet("heart", imgPath("heart.png"), {
                 frameWidth: 16,

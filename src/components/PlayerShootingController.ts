@@ -1,4 +1,4 @@
-import { Math, Physics, Scene } from "phaser";
+import { Input, Math, Physics, Scene } from "phaser";
 import { IPoint } from "../utils/IPoint";
 import { IWeapon } from "./IWeapon";
 
@@ -21,6 +21,12 @@ export class PlayerShootingController {
         this.dir = new Vec(1, 0);
         scene.input.on("pointerdown", () => (this.isDown = true));
         scene.input.on("pointerup", () => (this.isDown = false));
+
+        const KeyCodes = Input.Keyboard.KeyCodes;
+        const addKey = (key: number | string) =>
+            scene.input.keyboard.addKey(key);
+        const reload = addKey(KeyCodes.R);
+        reload.on("down", () => this.reload());
     }
 
     public disable() {
@@ -40,6 +46,13 @@ export class PlayerShootingController {
         }
         this.dir = this.nextDir();
         this.weapon.shoot(this.pos, this.dir);
+    }
+
+    private reload() {
+        if (!this.enabled) {
+            return;
+        }
+        this.weapon.reload();
     }
 
     private nextPos() {
