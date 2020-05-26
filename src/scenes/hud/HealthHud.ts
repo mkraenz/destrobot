@@ -1,8 +1,10 @@
+import { range } from "lodash";
 import { Scene } from "phaser";
 import { Heart } from "./Heart";
 
 export class HealthHud extends Scene {
     private player!: { health: number; maxHealth: number };
+    private hearts: Heart[] = [];
 
     constructor(key = "HealthHud") {
         super({ key });
@@ -16,18 +18,22 @@ export class HealthHud extends Scene {
         this.drawHearts();
     }
 
+    public update() {
+        this.hearts.forEach(h => h.update());
+    }
+
     private drawHearts() {
         const xOffset = 20 * 3;
-        Array(this.player.maxHealth)
-            .fill(0)
-            .forEach((zero, i) => {
+        const uiHearts = range(this.player.maxHealth).map(
+            (_, i) =>
                 new Heart(
                     this,
                     50 + xOffset * i,
                     50,
                     i,
                     () => this.player.health
-                );
-            });
+                )
+        );
+        this.hearts.push(...uiHearts);
     }
 }

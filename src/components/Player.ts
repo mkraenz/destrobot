@@ -1,4 +1,5 @@
 import { Physics, Scene } from "phaser";
+import { DEV } from "../dev-config";
 import { Color, toHex } from "../styles/Color";
 import { IWeapon } from "./IWeapon";
 import { PlayerLevelController } from "./PlayerLevelController";
@@ -129,6 +130,9 @@ export class Player extends Physics.Arcade.Sprite {
     }
 
     private die() {
+        if (DEV.playerInvicible) {
+            return;
+        }
         this.movementController.disable();
         this.shootingController.disable();
         this.disableBody();

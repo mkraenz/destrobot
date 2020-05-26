@@ -4,25 +4,33 @@ import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
 
 const MIN_DISTANCE_TO_TARGET = 5;
-const SPEED = 50;
-const DROP_FREQUENCY = 5;
+
+export interface IEnemyConfig {
+    texture: string;
+    health: number;
+    dropFrequency: number;
+    speed: number;
+    name: string;
+}
 
 export class Enemy extends Physics.Arcade.Sprite {
     public health: number;
+    private dropFrequency: number;
+    private speed: number;
 
     constructor(
         scene: Scene,
-        x: number,
-        y: number,
         private target: GameObjects.Sprite,
-        cfg: {
-            health: number;
-        }
+        cfg: IEnemyConfig & IPoint
     ) {
-        super(scene, x, y, "enemy");
+        super(scene, cfg.x, cfg.y, cfg.texture);
+        console.log(cfg.texture);
+        this.name = cfg.name;
+        this.health = cfg.health;
+        this.dropFrequency = cfg.dropFrequency;
+        this.speed = cfg.speed;
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.health = cfg.health;
     }
 
     public create() {
@@ -37,7 +45,7 @@ export class Enemy extends Physics.Arcade.Sprite {
         const direction = goal
             .add(location.negate())
             .normalize()
-            .scale(SPEED);
+            .scale(this.speed);
         this.setVelocity(direction.x, direction.y);
     }
 
@@ -48,16 +56,8 @@ export class Enemy extends Physics.Arcade.Sprite {
         }
     }
 
-    public isCloseToTarget() {
-        if (!this.target) {
-            return false;
-        }
-        const dist = this.dist(this.target);
-        return dist < MIN_DISTANCE_TO_TARGET;
-    }
-
     public die() {
-        if (random(DROP_FREQUENCY) === DROP_FREQUENCY) {
+        if (random(this.dropFrequency) === this.dropFrequency) {
             this.scene.events.emit("drop-item", { x: this.x, y: this.y });
         }
         this.scene.events.emit("enemy-killed");
@@ -70,6 +70,14 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.health -= damage;
         this.setTint(toHex(Color.Red));
         setTimeout(() => this.clearTint(), 200);
+    }
+
+    private isCloseToTarget() {
+        if (!this.target) {
+            return false;
+        }
+        const dist = this.dist(this.target);
+        return dist < MIN_DISTANCE_TO_TARGET;
     }
 
     private dist(other: IPoint) {

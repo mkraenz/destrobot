@@ -6,6 +6,7 @@ export class Heart extends Physics.Arcade.Sprite implements IPowerUp {
         super(scene, x, y, "heart");
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.setFrame(7);
     }
 
     public onCollide(): void {

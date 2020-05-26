@@ -56,7 +56,9 @@ export class MainScene extends Scene {
             w => w.name === lvl.player.startWeapon
         );
         if (!weaponData) {
-            throw new Error("Could not parse level");
+            throw new Error(
+                `Could not parse level weaponData for startWeapon ${lvl.player.startWeapon}`
+            );
         }
         const mg = new Weapon(this, this.playerBullets, weaponData);
         this.player = new Player(this, { ...lvl.player, weapon: mg });
@@ -73,24 +75,22 @@ export class MainScene extends Scene {
             collideWorldBounds: true,
         });
 
-        const spawner = new EnemySpawner(
-            this,
-            { x: 250, y: 1275 },
-            this.player,
-            this.enemies
-        );
-        const spawner2 = new EnemySpawner(
-            this,
-            { x: 1250, y: 600 },
-            this.player,
-            this.enemies
-        );
-        const spawner3 = new EnemySpawner(
-            this,
-            { x: 1370, y: 1300 },
-            this.player,
-            this.enemies
-        );
+        lvl.spawners.forEach(({ x, y, enemiesPerWave, waveTimeout, type }) => {
+            const spawnedEnemyData = lvl.enemies.find(e => e.name === type);
+            if (!spawnedEnemyData) {
+                throw new Error(
+                    `Could not parse level spawnedEnemyData for type ${type}`
+                );
+            }
+            const spawner = new EnemySpawner(
+                this,
+                { x, y },
+                this.player,
+                this.enemies,
+                spawnedEnemyData
+            );
+            spawner.spawnInterval(enemiesPerWave, waveTimeout);
+        });
 
         this.physics.add.collider(this.player, this.enemies, (player, enemy) =>
             this.player.onHit()
@@ -113,7 +113,9 @@ export class MainScene extends Scene {
                 this.physics.add.collider(this.player, layer);
             }
             if (layer.collideBullets) {
-                this.physics.add.collider(this.playerBullets, layer);
+                this.physics.add.collider(this.playerBullets, layer, bullet =>
+                    this.playerBullets.remove(bullet, true, true)
+                );
             }
             if (layer.collisionProperty) {
                 layer.setCollisionByProperty({
@@ -121,10 +123,6 @@ export class MainScene extends Scene {
                 });
             }
         });
-
-        spawner.spawnInterval(5, 3000);
-        spawner2.spawnInterval(5, 3000);
-        spawner3.spawnInterval(5, 3000);
 
         const powerups = this.physics.add.group([], {
             active: true,
@@ -135,11 +133,7 @@ export class MainScene extends Scene {
         });
         new ItemDropper(this, powerups);
         this.events.emit("drop-item", {
-            x: this.player.x + 100,
-            y: this.player.y,
-        });
-        this.events.emit("drop-item", {
-            x: this.player.x + 200,
+            x: this.player.x + 300,
             y: this.player.y,
         });
     }

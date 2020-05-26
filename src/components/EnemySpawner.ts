@@ -1,27 +1,31 @@
 import { random } from "lodash";
 import { GameObjects, Physics, Scene } from "phaser";
 import { IPoint } from "../utils/IPoint";
-import { Enemy } from "./Enemy";
+import { Enemy, IEnemyConfig } from "./Enemy";
+
+const MAX = 20;
 
 export class EnemySpawner {
     constructor(
         private scene: Scene,
         private at: IPoint,
         private target: GameObjects.Sprite,
-        private enemies: Physics.Arcade.Group
+        private enemies: Physics.Arcade.Group,
+        private cfg: IEnemyConfig
     ) {}
 
     public spawn(n: number) {
+        if (this.enemies.countActive() > MAX) {
+            return [];
+        }
         return Array(n)
             .fill(0)
             .map(_ => {
-                const enemy = new Enemy(
-                    this.scene,
-                    this.at.x + random(100),
-                    this.at.y + random(100),
-                    this.target,
-                    { health: 5 }
-                );
+                const enemy = new Enemy(this.scene, this.target, {
+                    ...this.cfg,
+                    x: this.at.x + random(100),
+                    y: this.at.y + random(100),
+                });
                 enemy.create();
                 return enemy;
             });

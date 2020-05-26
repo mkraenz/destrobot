@@ -91,23 +91,22 @@ export class LoadingScene extends Scene {
     }
 
     private preloadAllAssets() {
-        const withImagePath = (filename: string) =>
-            `./assets/images/${filename}`;
+        const imgPath = (filename: string) => `./assets/images/${filename}`;
         this.load
-            .spritesheet("player", withImagePath("player.png"), {
+            .spritesheet("player", imgPath("player.png"), {
                 frameWidth: 16,
                 frameHeight: 16,
             })
-            .spritesheet("enemy", withImagePath("robot.png"), {
+            .spritesheet("robot", imgPath("robot.png"), {
                 frameWidth: 28,
                 frameHeight: 32,
             })
-            .image("bullet", withImagePath("citizen.png"))
-            .image(
-                "world",
-                withImagePath("earthbound-scarab-do-not-upload.png")
-            )
-            .image("heart", withImagePath("heart.png"))
+            .image("bullet", imgPath("citizen.png"))
+            .image("world", imgPath("earthbound-scarab-do-not-upload.png"))
+            .spritesheet("heart", imgPath("heart.png"), {
+                frameWidth: 16,
+                frameHeight: 16,
+            })
             .tilemapTiledJSON("map", "./assets/maps/map.json")
             .image("tiles", "./assets/images/tileset.png");
     }
