@@ -92,6 +92,7 @@ export class LoadingScene extends Scene {
 
     private preloadAllAssets() {
         const imgPath = (filename: string) => `./assets/images/${filename}`;
+        const audioPath = (filename: string) => `./assets/sounds/${filename}`;
         this.load
             .spritesheet("player", imgPath("player.png"), {
                 frameWidth: 16,
@@ -107,6 +108,8 @@ export class LoadingScene extends Scene {
             .image("machine-gun", imgPath("tommy-gun.png"))
             .image("pistol", imgPath("pistol.png"))
             .image("sniper-rifle", imgPath("sniper-rifle.png"))
+            .audio("sniper-rifle-shot", audioPath("sniper-rifle-shot.mp3"))
+            .audio("empty-magazine", audioPath("empty-magazine.mp3"))
             .spritesheet("heart", imgPath("heart.png"), {
                 frameWidth: 16,
                 frameHeight: 16,

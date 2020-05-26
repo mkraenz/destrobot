@@ -1,18 +1,22 @@
 import { Physics, Scene } from "phaser";
+import { EventType } from "../../events/EventType";
 import { Bullet } from "../Bullet";
 import { IWeapon } from "../IWeapon";
 
 interface IWeaponConfig {
     name: string;
-    // texture: string; // TODO
+    texture: string;
     cooldown: number;
     magazine: number;
     reloadTime: number;
+    fireSoundKey: string;
 }
 
 export class Weapon implements IWeapon {
     public readonly name: string;
+    public readonly texture: string;
     private onCooldown = false;
+    private reloading = false;
     private cooldown: number;
     private bulletSpeed: number;
     private ttl: number;
@@ -21,6 +25,7 @@ export class Weapon implements IWeapon {
     private magazine: number;
     private bulletsLeftInMagazine: number;
     private reloadTime: number;
+    private fireSoundKey: string;
 
     constructor(
         private scene: Scene,
@@ -32,6 +37,7 @@ export class Weapon implements IWeapon {
             bulletTexture: string;
         }
     ) {
+        this.texture = cfg.texture;
         this.cooldown = cfg.cooldown;
         this.bulletSpeed = cfg.bulletSpeed;
         this.ttl = cfg.ttl;
@@ -41,26 +47,29 @@ export class Weapon implements IWeapon {
         this.magazine = cfg.magazine;
         this.reloadTime = cfg.reloadTime;
         this.bulletsLeftInMagazine = cfg.magazine;
+        this.fireSoundKey = cfg.fireSoundKey;
     }
 
     public reload() {
         // TODO sounds: reloading
-        if (this.onCooldown) {
-            return;
-        }
+        this.reloading = true;
         setTimeout(() => {
+            this.reloading = false;
             this.bulletsLeftInMagazine = this.magazine;
+            this.scene.events.emit(EventType.WeaponReloaded);
         }, this.reloadTime);
     }
 
     public fire(pos: Phaser.Math.Vector2, dir: Phaser.Math.Vector2) {
-        if (this.onCooldown) {
+        if (this.onCooldown || this.reloading) {
             return;
         }
         if (this.bulletsLeftInMagazine <= 0) {
-            // TODO sounds: empty magazine
+            this.scene.sound.play("empty-magazine");
+            this.setCooldown();
             return;
         }
+        this.scene.sound.play(this.fireSoundKey);
         const bullet = new Bullet(this.scene, {
             pos,
             vel: dir,
@@ -73,6 +82,7 @@ export class Weapon implements IWeapon {
         bullet.create();
 
         this.bulletsLeftInMagazine--;
+        this.scene.events.emit(EventType.WeaponFired);
         this.setCooldown();
     }
 

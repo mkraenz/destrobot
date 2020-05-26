@@ -6,11 +6,12 @@ import { IPoint } from "../utils/IPoint";
 const MIN_DISTANCE_TO_TARGET = 5;
 
 export interface IEnemyConfig {
+    name: string;
     texture: string;
+    scale: number;
     health: number;
     dropFrequency: number;
     speed: number;
-    name: string;
 }
 
 export class Enemy extends Physics.Arcade.Sprite {
@@ -24,11 +25,11 @@ export class Enemy extends Physics.Arcade.Sprite {
         cfg: IEnemyConfig & IPoint
     ) {
         super(scene, cfg.x, cfg.y, cfg.texture);
-        console.log(cfg.texture);
         this.name = cfg.name;
         this.health = cfg.health;
         this.dropFrequency = cfg.dropFrequency;
         this.speed = cfg.speed;
+        this.setScale(cfg.scale);
         scene.add.existing(this);
         scene.physics.add.existing(this);
     }

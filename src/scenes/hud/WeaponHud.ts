@@ -4,14 +4,15 @@ import { TextConfig } from "../../styles/Text";
 
 interface IWeapon {
     magazine: number;
-    bulletsLeft: number;
     texture: string;
     bulletTexture: string;
 }
 
-export class MagazineHud extends Scene {
+export class WeaponHud extends Scene {
     private weapon!: IWeapon; // this scene gets only shown after a weapon-changed event has triggered
     private bulletText?: GameObjects.Text;
+    private bulletsLeft: number = 0;
+    private weaponImage?: GameObjects.Image;
 
     constructor(key = "MagazineHud") {
         super({ key });
@@ -34,26 +35,32 @@ export class MagazineHud extends Scene {
         const { width, height } = this.scale;
         if (!this.bulletText) {
             this.bulletText = this.add
-                .text(width - 50, height - 50, "", TextConfig.lg)
-                .setOrigin(1, 0.5);
+                .text(width - 5, height - 50, "", TextConfig.lg)
+                .setOrigin(1, 1);
         }
-        this.bulletText.setText(
-            `${this.weapon.bulletsLeft}/${this.weapon.magazine}`
-        );
+        this.bulletText.setText(`${this.bulletsLeft}/${this.weapon.magazine}`);
+        if (!this.weaponImage) {
+            this.weaponImage = this.add
+                .image(width - 5, height - 5, this.weapon.texture)
+                .setOrigin(1);
+        }
+        this.weaponImage.setTexture(this.weapon.texture);
     }
 
     private setWeapon(weapon: IWeapon) {
         this.weapon = weapon;
+        this.bulletsLeft = weapon.magazine;
+
         this.redraw();
     }
 
     private reload() {
-        this.weapon.bulletsLeft = this.weapon.magazine;
+        this.bulletsLeft = this.weapon.magazine;
         this.redraw();
     }
 
     private fire() {
-        this.weapon.bulletsLeft--;
+        this.bulletsLeft--;
         this.redraw();
     }
 }

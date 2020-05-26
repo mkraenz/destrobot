@@ -9,8 +9,8 @@ import { Player } from "../components/Player";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { Level1 } from "../levels/Level1";
 import { HealthHud } from "./hud/HealthHud";
-import { MagazineHud } from "./hud/MagazineHud";
 import { ScoreHud } from "./hud/ScoreHud";
+import { WeaponHud } from "./hud/WeaponHud";
 
 type Group = Physics.Arcade.Group;
 
@@ -54,15 +54,6 @@ export class MainScene extends Scene {
             enable: true,
             active: true,
         });
-
-        const weaponData = this.levelData.weapons.find(
-            w => w.name === lvl.player.startWeapon
-        );
-        if (!weaponData) {
-            throw new Error(
-                `Could not parse level weaponData for startWeapon ${lvl.player.startWeapon}`
-            );
-        }
         this.player = new Player(this, { ...lvl.player });
         new WeaponPickUpHandler(this, lvl, this.playerBullets);
 
@@ -200,6 +191,6 @@ export class MainScene extends Scene {
             player: this.player,
         });
         this.scene.add("ScoreHud", ScoreHud, true);
-        this.scene.add("MagazineHud", MagazineHud, true);
+        this.scene.add("MagazineHud", WeaponHud, true);
     }
 }
