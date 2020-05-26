@@ -92,8 +92,15 @@ export class MainScene extends Scene {
             spawner.spawnInterval(enemiesPerWave, waveTimeout);
         });
 
-        this.physics.add.collider(this.player, this.enemies, (player, enemy) =>
-            this.player.onHit()
+        this.physics.add.collider(
+            this.player,
+            this.enemies,
+            (player, enemy) => {
+                const hitApplied = this.player.onHit();
+                if (hitApplied) {
+                    this.cameras.main.shake(50, 0.005);
+                }
+            }
         );
         this.physics.add.collider(this.enemies, undefined as any);
         this.physics.add.collider(
@@ -102,7 +109,7 @@ export class MainScene extends Scene {
             (enemy, bullet) => {
                 const b = bullet as Bullet;
                 b.setHit();
-                (enemy as Enemy).getHit(b.damage);
+                (enemy as Enemy).takeDamage(b.damage);
             }
         );
         mapLayers.forEach(layer => {

@@ -85,9 +85,10 @@ export class Player extends Physics.Arcade.Sprite {
         return this.maxHealth;
     }
 
-    public onHit() {
+    /** @returns true if hit applied, else false */
+    public onHit(): boolean {
         if (this.xWasHit || this.xInvincible) {
-            return;
+            return false;
         }
         this.xWasHit = true;
         this.xInvincible = true;
@@ -98,6 +99,7 @@ export class Player extends Physics.Arcade.Sprite {
         setTimeout(() => {
             this.xInvincible = false;
         }, this.hitInvicibilityTimeout);
+        return true;
     }
 
     public update() {

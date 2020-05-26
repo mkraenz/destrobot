@@ -66,7 +66,7 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.setVisible(false);
     }
 
-    public getHit(damage: number) {
+    public takeDamage(damage: number) {
         this.health -= damage;
         this.setTint(toHex(Color.Red));
         setTimeout(() => this.clearTint(), 200);
