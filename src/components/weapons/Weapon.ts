@@ -12,6 +12,8 @@ interface IWeaponConfig {
     fireSoundKey: string;
 }
 
+const RELOAD_SOUND_LENGTH = 350;
+
 export class Weapon implements IWeapon {
     public readonly name: string;
     public readonly texture: string;
@@ -51,8 +53,11 @@ export class Weapon implements IWeapon {
     }
 
     public reload() {
-        // TODO sounds: reloading
         this.reloading = true;
+        setTimeout(
+            () => this.scene.sound.play("weapon-loaded"),
+            this.reloadTime - RELOAD_SOUND_LENGTH
+        );
         setTimeout(() => {
             this.reloading = false;
             this.bulletsLeftInMagazine = this.magazine;

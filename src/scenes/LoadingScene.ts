@@ -109,6 +109,8 @@ export class LoadingScene extends Scene {
             .image("pistol", imgPath("pistol.png"))
             .image("sniper-rifle", imgPath("sniper-rifle.png"))
             .audio("sniper-rifle-shot", audioPath("sniper-rifle-shot.mp3"))
+            .audio("empty-magazine", audioPath("empty-magazine.mp3")) // dry shot
+            .audio("weapon-loaded", audioPath("weapon-loaded.mp3"))
             .audio("empty-magazine", audioPath("empty-magazine.mp3"))
             .spritesheet("heart", imgPath("heart.png"), {
                 frameWidth: 16,
