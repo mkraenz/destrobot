@@ -1,4 +1,5 @@
 import { Input, Math, Physics, Scene } from "phaser";
+import { EventType } from "../events/EventType";
 import { IPoint } from "../utils/IPoint";
 import { IWeapon } from "./IWeapon";
 
@@ -15,7 +16,7 @@ export class PlayerShootingController {
         private scene: Scene,
         private player: Physics.Arcade.Sprite,
         private playerOffset: IPoint,
-        private weapon: IWeapon
+        private weapon?: IWeapon
     ) {
         this.pos = this.nextPos();
         this.dir = new Vec(1, 0);
@@ -27,6 +28,10 @@ export class PlayerShootingController {
             scene.input.keyboard.addKey(key);
         const reload = addKey(KeyCodes.R);
         reload.on("down", () => this.reload());
+        this.scene.events.on(
+            EventType.WeaponChanged,
+            (data: { weapon: IWeapon }) => this.setWeapon(data.weapon)
+        );
     }
 
     public disable() {
@@ -40,16 +45,20 @@ export class PlayerShootingController {
         }
     }
 
+    public setWeapon(weapon: IWeapon) {
+        this.weapon = weapon;
+    }
+
     private shoot() {
-        if (!this.enabled) {
+        if (!this.enabled || !this.weapon) {
             return;
         }
         this.dir = this.nextDir();
-        this.weapon.shoot(this.pos, this.dir);
+        this.weapon.fire(this.pos, this.dir);
     }
 
     private reload() {
-        if (!this.enabled) {
+        if (!this.enabled || !this.weapon) {
             return;
         }
         this.weapon.reload();

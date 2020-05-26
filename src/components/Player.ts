@@ -1,7 +1,7 @@
 import { Physics, Scene } from "phaser";
 import { DEV } from "../dev-config";
+import { EventType } from "../events/EventType";
 import { Color, toHex } from "../styles/Color";
-import { IWeapon } from "./IWeapon";
 import { PlayerLevelController } from "./PlayerLevelController";
 import { PlayerMovementController } from "./PlayerMovementController";
 import { PlayerShootingController } from "./PlayerShootingController";
@@ -41,7 +41,6 @@ export class Player extends Physics.Arcade.Sprite {
             texture: string;
             x: number;
             y: number;
-            weapon: IWeapon;
             scale: number;
         }
     ) {
@@ -63,8 +62,7 @@ export class Player extends Physics.Arcade.Sprite {
         this.shootingController = new PlayerShootingController(
             this.scene,
             this,
-            { x: 10, y: 0 },
-            cfg.weapon
+            { x: 10, y: 0 }
         );
         new PlayerLevelController(this.scene, movementController);
         this.setCollideWorldBounds(true);
@@ -72,7 +70,7 @@ export class Player extends Physics.Arcade.Sprite {
         this.animate();
         this.play(IDLE);
 
-        this.scene.events.on("heart-collected", () =>
+        this.scene.events.on(EventType.HeartCollected, () =>
             this.handleHeartCollected()
         );
     }

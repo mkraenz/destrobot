@@ -104,6 +104,9 @@ export class LoadingScene extends Scene {
             .image("bullet", imgPath("bullet.png"))
             .image("bullet2", imgPath("bullet2.png"))
             .image("world", imgPath("earthbound-scarab-do-not-upload.png"))
+            .image("machine-gun", imgPath("tommy-gun.png"))
+            .image("pistol", imgPath("pistol.png"))
+            .image("sniper-rifle", imgPath("sniper-rifle.png"))
             .spritesheet("heart", imgPath("heart.png"), {
                 frameWidth: 16,
                 frameHeight: 16,

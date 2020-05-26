@@ -2,7 +2,7 @@ import { Physics, Scene } from "phaser";
 import { Bullet } from "../Bullet";
 import { IWeapon } from "../IWeapon";
 
-interface IWeaponCfg {
+interface IWeaponConfig {
     name: string;
     // texture: string; // TODO
     cooldown: number;
@@ -25,7 +25,7 @@ export class Weapon implements IWeapon {
     constructor(
         private scene: Scene,
         private bullets: Physics.Arcade.Group,
-        cfg: IWeaponCfg & {
+        cfg: IWeaponConfig & {
             bulletSpeed: number;
             damage: number;
             ttl: number;
@@ -45,12 +45,15 @@ export class Weapon implements IWeapon {
 
     public reload() {
         // TODO sounds: reloading
+        if (this.onCooldown) {
+            return;
+        }
         setTimeout(() => {
             this.bulletsLeftInMagazine = this.magazine;
         }, this.reloadTime);
     }
 
-    public shoot(pos: Phaser.Math.Vector2, dir: Phaser.Math.Vector2) {
+    public fire(pos: Phaser.Math.Vector2, dir: Phaser.Math.Vector2) {
         if (this.onCooldown) {
             return;
         }

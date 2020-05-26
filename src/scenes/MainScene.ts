@@ -6,9 +6,10 @@ import { EnemySpawner } from "../components/EnemySpawner";
 import { IPowerUp } from "../components/IPowerUp";
 import { ItemDropper } from "../components/ItemDropper";
 import { Player } from "../components/Player";
-import { Weapon } from "../components/weapons/Weapon";
+import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { Level1 } from "../levels/Level1";
 import { HealthHud } from "./hud/HealthHud";
+import { MagazineHud } from "./hud/MagazineHud";
 import { ScoreHud } from "./hud/ScoreHud";
 
 type Group = Physics.Arcade.Group;
@@ -62,8 +63,8 @@ export class MainScene extends Scene {
                 `Could not parse level weaponData for startWeapon ${lvl.player.startWeapon}`
             );
         }
-        const mg = new Weapon(this, this.playerBullets, weaponData);
-        this.player = new Player(this, { ...lvl.player, weapon: mg });
+        this.player = new Player(this, { ...lvl.player });
+        new WeaponPickUpHandler(this, lvl, this.playerBullets);
 
         this.createCamera(map);
         this.cameras.main.fadeIn(FADE_IN_TIME);
@@ -144,10 +145,25 @@ export class MainScene extends Scene {
         this.physics.add.collider(this.player, powerups, (player, powerup) => {
             ((powerup as unknown) as IPowerUp).onCollide();
         });
-        new ItemDropper(this, powerups);
-        this.events.emit("drop-item", {
+        const itemDropper = new ItemDropper(this, powerups);
+        itemDropper.spawnHeart({
             x: this.player.x + 300,
             y: this.player.y,
+        });
+        itemDropper.spawnWeapon({
+            x: this.player.x + 100,
+            y: this.player.y,
+            name: "Pistol",
+            texture: "pistol",
+            scale: 1,
+        });
+
+        itemDropper.spawnWeapon({
+            x: this.player.x + 500,
+            y: this.player.y,
+            name: "Sniper Rifle",
+            texture: "sniper-rifle",
+            scale: 1,
         });
     }
 
@@ -184,5 +200,6 @@ export class MainScene extends Scene {
             player: this.player,
         });
         this.scene.add("ScoreHud", ScoreHud, true);
+        this.scene.add("MagazineHud", MagazineHud, true);
     }
 }
