@@ -4,6 +4,7 @@ import { IMovableActor } from "./IMovableActor";
 type Key = Input.Keyboard.Key;
 const DODGE_TIMEOUT = 300;
 const DODGE_COOLDOWN = 1000;
+const DODGE_SPEED_UP_FACTOR = 2;
 
 export class PlayerMovementController {
     private keys: {
@@ -61,10 +62,6 @@ export class PlayerMovementController {
         const left = this.keys.left;
         const right = this.keys.right;
         const dodge = this.keys.dodge;
-        if (dodge.isDown && !this.onDodgeCooldown) {
-            this.dodge();
-            return;
-        }
         if (up.isDown && down.isUp) {
             this.setVelocityY(-this.speed);
         }
@@ -83,12 +80,17 @@ export class PlayerMovementController {
         if (up.isUp && down.isUp) {
             this.setVelocityY(0);
         }
+        // dodge last so that the direction input gets applied
+        if (dodge.isDown && !this.onDodgeCooldown) {
+            this.dodge();
+            return;
+        }
     }
 
     private dodge() {
         this.isDodging = true;
         this.onDodgeCooldown = true;
-        const dodgeVel = this.player.body.velocity.scale(2);
+        const dodgeVel = this.player.body.velocity.scale(DODGE_SPEED_UP_FACTOR);
         this.player.setVelocity(dodgeVel.x, dodgeVel.y);
         this.playerVsEnemiesCollider.active = false;
         const onDodgeFinish = () => {
