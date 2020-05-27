@@ -52,6 +52,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.body.setSize(this.width - 7, this.height - 7);
 
         const movementController = new PlayerMovementController(
             this.scene,

@@ -61,7 +61,7 @@ export class Enemy extends Physics.Arcade.Sprite {
     }
 
     public die() {
-        if (random(this.dropFrequency) === this.dropFrequency) {
+        if (this.isRandomDrop()) {
             this.scene.events.emit("drop-item", { x: this.x, y: this.y });
         }
         this.scene.events.emit("enemy-killed");
@@ -86,5 +86,12 @@ export class Enemy extends Physics.Arcade.Sprite {
 
     private dist(other: IPoint) {
         return Phaser.Math.Distance.Between(this.x, this.y, other.x, other.y);
+    }
+
+    private isRandomDrop() {
+        // _.random(n) emits numbers from 0 to n-1.
+        // We want that a drop occurs once in dropFrequency many cases, thus the -1.
+        // For example, dropFrequency=1 means every kill will drop something.
+        return random(this.dropFrequency - 1) === this.dropFrequency - 1;
     }
 }

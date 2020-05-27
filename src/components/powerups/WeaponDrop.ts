@@ -6,8 +6,8 @@ export interface IWeaponDropCfg {
     x: number;
     y: number;
     texture: string;
-    scale: number;
     name: string;
+    pickUpScale: number;
 }
 
 export class WeaponDrop extends Physics.Arcade.Sprite implements IPowerUp {
@@ -16,6 +16,7 @@ export class WeaponDrop extends Physics.Arcade.Sprite implements IPowerUp {
         this.name = cfg.name;
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.setScale(cfg.pickUpScale);
     }
 
     public onCollide(): void {

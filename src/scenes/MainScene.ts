@@ -7,7 +7,7 @@ import { IPowerUp } from "../components/IPowerUp";
 import { ItemDropper } from "../components/ItemDropper";
 import { Player } from "../components/Player";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
-import { Level1 } from "../levels/Level1";
+import { ILevel } from "../levels/ILevel";
 import { HealthHud } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
 import { WeaponHud } from "./hud/WeaponHud";
@@ -19,7 +19,7 @@ const CAMERA_SHAKE_INTENSITY = 0.005;
 const CAMERA_SHAKE_DURATION = 50;
 
 export class MainScene extends Scene {
-    private levelData!: typeof Level1;
+    private levelData!: ILevel;
     private player!: Player;
     private enemies!: Group;
     private playerBullets!: Group;
@@ -29,7 +29,7 @@ export class MainScene extends Scene {
         super({ key: "MainScene" });
     }
 
-    public init(level: typeof Level1) {
+    public init(level: ILevel) {
         this.levelData = level;
     }
 
@@ -55,7 +55,7 @@ export class MainScene extends Scene {
             active: true,
         });
         this.player = new Player(this, { ...lvl.player });
-        new WeaponPickUpHandler(this, lvl, this.playerBullets);
+        new WeaponPickUpHandler(this, lvl.weapons, this.playerBullets);
 
         this.createCamera(map);
         this.cameras.main.fadeIn(FADE_IN_TIME);
@@ -134,25 +134,25 @@ export class MainScene extends Scene {
         this.physics.add.collider(this.player, powerups, (player, powerup) => {
             ((powerup as unknown) as IPowerUp).onCollide();
         });
-        const itemDropper = new ItemDropper(this, powerups);
+        const itemDropper = new ItemDropper(
+            this,
+            powerups,
+            this.levelData.weapons
+        );
+
+        // test pickUps
         itemDropper.spawnHeart({
             x: this.player.x + 300,
-            y: this.player.y,
+            y: this.player.y - 100,
         });
-        itemDropper.spawnWeapon({
-            x: this.player.x + 100,
-            y: this.player.y,
-            name: "Pistol",
-            texture: "pistol",
-            scale: 1,
-        });
-
-        itemDropper.spawnWeapon({
-            x: this.player.x + 500,
-            y: this.player.y,
-            name: "Sniper Rifle",
-            texture: "sniper-rifle",
-            scale: 1,
+        lvl.weapons.forEach((weapon, i) => {
+            itemDropper.spawnWeapon({
+                x: this.player.x + 100 + i * 100,
+                y: this.player.y,
+                name: weapon.name,
+                texture: weapon.texture,
+                pickUpScale: weapon.pickUpScale,
+            });
         });
     }
 
