@@ -36,7 +36,7 @@ export const Level1 = {
         },
         {
             name: "Machine Gun",
-            damage: 20,
+            damage: 1,
             bulletSpeed: 500,
             ttl: 200,
             cooldown: 100,
@@ -81,7 +81,7 @@ export const Level1 = {
             texture: "robot",
             dropFrequency: 10, // on average, one in dropFrequency kills will drop something
             health: 5,
-            speed: 100,
+            speed: 125,
             scale: 1,
             score: 10,
         },
@@ -90,8 +90,8 @@ export const Level1 = {
             damage: 1,
             texture: "robot",
             dropFrequency: 10, // on average, one in dropFrequency kills will drop something
-            health: 3,
-            speed: 250,
+            health: 1,
+            speed: 220,
             scale: 1,
             score: 10,
             tint: "#0000FF", // blue
