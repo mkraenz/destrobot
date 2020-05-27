@@ -4,6 +4,7 @@ import { IDropItemEvent } from "../events/Events";
 import { ILevel } from "../levels/ILevel";
 import { randomEle } from "../utils/array-utils";
 import { IPoint } from "../utils/IPoint";
+import { Ammo } from "./powerups/Ammo";
 import { Heart } from "./powerups/Heart";
 import { IWeaponDropCfg, WeaponDrop } from "./powerups/WeaponDrop";
 
@@ -14,12 +15,7 @@ export class ItemDropper {
         private weaponsData: ILevel["weapons"]
     ) {
         this.scene.events.on("drop-item", (data: IDropItemEvent) => {
-            if (this.randomizeType() === "heart") {
-                this.spawnHeart(data);
-                return;
-            }
-            const weaponData = this.randomWeaponData();
-            this.spawnWeapon({ ...weaponData, ...data });
+            this.dropRandomItem(data);
         });
     }
 
@@ -33,8 +29,39 @@ export class ItemDropper {
         this.powerups.add(heart);
     }
 
+    public spawnAmmo(at: IPoint) {
+        const ammo = new Ammo(this.scene, at.x, at.y);
+        this.powerups.add(ammo);
+    }
+
+    private dropRandomItem(data: IDropItemEvent) {
+        const type = this.randomizeType();
+        switch (type) {
+            case "ammo":
+                this.spawnAmmo(data);
+                break;
+            case "heart":
+                this.spawnHeart(data);
+                break;
+            case "weapon":
+                const weaponData = this.randomWeaponData();
+                this.spawnWeapon({ ...weaponData, ...data });
+                break;
+        }
+    }
+
     private randomizeType() {
-        return random(1) === 1 ? "weapon" : "heart";
+        const randomInt = random(3);
+        switch (randomInt) {
+            case 0:
+                return "weapon";
+            case 1:
+                return "heart";
+            case 2:
+                return "ammo";
+            default:
+                return "ammo";
+        }
     }
 
     private randomWeaponData() {

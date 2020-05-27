@@ -36,7 +36,7 @@ export const Level1 = {
         },
         {
             name: "Machine Gun",
-            damage: 1,
+            damage: 20,
             bulletSpeed: 500,
             ttl: 200,
             cooldown: 100,
@@ -72,23 +72,35 @@ export const Level1 = {
         hitFreezeTimeout: 100,
         texture: "player",
         scale: 2,
+        speed: 200,
     },
     enemies: [
         {
             name: "Robot",
             damage: 1,
             texture: "robot",
-            dropFrequency: 20, // on average, one in dropFrequency kills will drop something
+            dropFrequency: 10, // on average, one in dropFrequency kills will drop something
             health: 5,
-            speed: 50,
+            speed: 100,
             scale: 1,
             score: 10,
+        },
+        {
+            name: "FastBot2k",
+            damage: 1,
+            texture: "robot",
+            dropFrequency: 10, // on average, one in dropFrequency kills will drop something
+            health: 3,
+            speed: 250,
+            scale: 1,
+            score: 10,
+            tint: "#0000FF", // blue
         },
         {
             name: "Megabot",
             damage: 2,
             texture: "robot",
-            dropFrequency: 3,
+            dropFrequency: 2,
             health: 20,
             speed: 50,
             scale: 3,
@@ -108,9 +120,17 @@ export const Level1 = {
             type: "Robot",
             x: 1250,
             y: 600,
-            enemiesPerWave: 5,
+            enemiesPerWave: 2,
             waveTimeout: 3000,
-            maxConcurrentEnemies: 10,
+            maxConcurrentEnemies: 4,
+        },
+        {
+            type: "FastBot2k",
+            x: 1250,
+            y: 600,
+            enemiesPerWave: 3,
+            waveTimeout: 3000,
+            maxConcurrentEnemies: 9,
         },
         {
             type: "Megabot",

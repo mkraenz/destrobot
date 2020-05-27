@@ -9,6 +9,18 @@ import { PlayerShootingController } from "./PlayerShootingController";
 const DEAD = "dead";
 const IDLE = "idle";
 
+interface IPlayerConfig {
+    health: number;
+    maxHealth: number;
+    hitInvicibilityTimeout: number;
+    hitFreezeTimeout: number;
+    texture: string;
+    x: number;
+    y: number;
+    scale: number;
+    speed: number;
+}
+
 interface IPlayerController {
     update(): void;
     disable(): void;
@@ -31,19 +43,7 @@ export class Player extends Physics.Arcade.Sprite {
     private health: number;
     private maxHealth: number;
 
-    constructor(
-        scene: Scene,
-        cfg: {
-            health: number;
-            maxHealth: number;
-            hitInvicibilityTimeout: number;
-            hitFreezeTimeout: number;
-            texture: string;
-            x: number;
-            y: number;
-            scale: number;
-        }
-    ) {
+    constructor(scene: Scene, cfg: IPlayerConfig) {
         super(scene, cfg.x, cfg.y, cfg.texture);
         this.health = cfg.health;
         this.hitInvicibilityTimeout = cfg.hitInvicibilityTimeout;
@@ -56,7 +56,8 @@ export class Player extends Physics.Arcade.Sprite {
 
         const movementController = new PlayerMovementController(
             this.scene,
-            this
+            this,
+            cfg.speed
         );
         this.movementController = movementController;
         this.setScale(cfg.scale);
@@ -92,6 +93,7 @@ export class Player extends Physics.Arcade.Sprite {
         this.xWasHit = true;
         this.xInvincible = true;
         this.health -= damage;
+        this.scene.sound.play("player-hit");
         setTimeout(() => {
             this.xWasHit = false;
         }, this.hitFreezeTimeout);
@@ -133,10 +135,14 @@ export class Player extends Physics.Arcade.Sprite {
         if (DEV.playerInvicible) {
             return;
         }
+        if (!this.body.enable) {
+            return;
+        }
         this.movementController.disable();
         this.shootingController.disable();
         this.disableBody();
         this.play(DEAD);
+        this.scene.sound.play("player-die");
     }
 
     private animate() {

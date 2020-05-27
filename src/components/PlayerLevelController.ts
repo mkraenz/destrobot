@@ -3,7 +3,7 @@ import { IEnemyKilledEvent } from "../events/Events";
 import { EventType } from "../events/EventType";
 import { PlayerMovementController } from "./PlayerMovementController";
 
-const SPEED_UP_FACTOR = 1.3;
+const SPEED_UP_FACTOR = 1.1;
 
 export class PlayerLevelController {
     private score = 0;

@@ -2,22 +2,22 @@ import { Physics, Scene } from "phaser";
 import { EventType } from "../../events/EventType";
 import { IPowerUp } from "../IPowerUp";
 
-const FILLED_FRAME = 7;
-const DISAPPEAR_TIMEOUT = 5000;
+const DISAPPEAR_TIMEOUT = 10000;
+const SCALE = 0.4;
+const TEXTURE = "ammo";
 
-export class Heart extends Physics.Arcade.Sprite implements IPowerUp {
+export class Ammo extends Physics.Arcade.Sprite implements IPowerUp {
     constructor(scene: Scene, x: number, y: number) {
-        super(scene, x, y, "heart");
+        super(scene, x, y, TEXTURE);
+        this.setScale(SCALE);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setFrame(FILLED_FRAME);
 
         setTimeout(() => this.destroy(), DISAPPEAR_TIMEOUT);
     }
 
     public onCollide(): void {
-        this.scene.sound.play("powerup");
-        this.scene.events.emit(EventType.HeartCollected);
+        this.scene.events.emit(EventType.AmmoCollected);
         this.destroy();
     }
 }

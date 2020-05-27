@@ -10,11 +10,11 @@ export class PlayerMovementController {
         right: Key;
     };
     private enabled = true;
-    private speed = 200;
 
     constructor(
         scene: Scene,
-        private player: Physics.Arcade.Sprite & { wasHit: boolean }
+        private player: Physics.Arcade.Sprite & { wasHit: boolean },
+        private speed: number
     ) {
         const KeyCodes = Input.Keyboard.KeyCodes;
         const addKey = (key: number | string) =>

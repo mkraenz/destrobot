@@ -16,6 +16,7 @@ export interface IEnemyConfig {
     speed: number;
     damage: number;
     score: number;
+    tint?: string;
 }
 
 export class Enemy extends Physics.Arcade.Sprite {
@@ -40,6 +41,9 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.setScale(cfg.scale);
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        if (cfg.tint) {
+            this.setTint(toHex(cfg.tint));
+        }
     }
 
     public create() {
@@ -74,11 +78,13 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.setActive(false);
         this.disableBody(true);
         this.setVisible(false);
+        this.scene.sound.play("enemy-die", { volume: 5 });
     }
 
     public takeDamage(damage: number) {
         this.health -= damage;
         this.setTint(toHex(Color.Red));
+        this.scene.sound.play("enemy-hit");
         setTimeout(() => this.clearTint(), 200);
     }
 

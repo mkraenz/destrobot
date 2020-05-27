@@ -20,7 +20,7 @@ export class WeaponPickUpHandler {
                     );
                 }
                 const weapon = new Weapon(scene, bullets, weaponData);
-                this.scene.events.emit(EventType.WeaponChanged, { weapon });
+                scene.events.emit(EventType.WeaponChanged, { weapon });
             }
         );
     }

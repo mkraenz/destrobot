@@ -2,6 +2,8 @@ import { Physics, Scene } from "phaser";
 import { EventType } from "../../events/EventType";
 import { IPowerUp } from "../IPowerUp";
 
+const DISAPPEAR_TIMEOUT = 10000;
+
 export interface IWeaponDropCfg {
     x: number;
     y: number;
@@ -17,9 +19,12 @@ export class WeaponDrop extends Physics.Arcade.Sprite implements IPowerUp {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setScale(cfg.pickUpScale);
+
+        setTimeout(() => this.destroy(), DISAPPEAR_TIMEOUT);
     }
 
     public onCollide(): void {
+        this.scene.sound.play("weapon-loaded");
         this.scene.events.emit(EventType.WeaponPickedUp, {
             weaponName: this.name,
         });

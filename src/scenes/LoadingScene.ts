@@ -94,6 +94,30 @@ export class LoadingScene extends Scene {
         const imgPath = (filename: string) => `./assets/images/${filename}`;
         const audioPath = (filename: string) => `./assets/sounds/${filename}`;
         this.load
+            .image("ammo", imgPath("ammo.png"))
+            .image("bullet", imgPath("bullet.png"))
+            .image("bullet2", imgPath("bullet2.png"))
+            .image("machine-gun", imgPath("tommy-gun.png"))
+            .image("pistol", imgPath("pistol.png"))
+            .image("sniper-rifle", imgPath("sniper-rifle.png"))
+            .audio("sniper-rifle-shot", audioPath("sniper-rifle-shot.mp3"))
+            .audio("empty-magazine", audioPath("empty-magazine.mp3")) // dry shot
+            .audio("weapon-loaded", audioPath("weapon-loaded.mp3"))
+            .audio("powerup", audioPath("powerup.mp3"))
+            .audio("fight_music", audioPath("fight-music-looped.mp3"))
+            .audio("player-hit", audioPath("impact-meat.mp3"))
+            .audio("enemy-hit", audioPath("punch.mp3"))
+            .audio("player-die", audioPath("player-die.mp3"))
+            .audio("enemy-die", audioPath("robot-off.mp3"))
+            .audio(
+                "weapon-last-bullet-shot",
+                audioPath("weapon-last-bullet-shot.mp3")
+            )
+            .audio("empty-magazine", audioPath("empty-magazine.mp3"))
+            .spritesheet("heart", imgPath("heart.png"), {
+                frameWidth: 16,
+                frameHeight: 16,
+            })
             .spritesheet("player", imgPath("player.png"), {
                 frameWidth: 16,
                 frameHeight: 16,
@@ -101,20 +125,6 @@ export class LoadingScene extends Scene {
             .spritesheet("robot", imgPath("robot.png"), {
                 frameWidth: 28,
                 frameHeight: 32,
-            })
-            .image("bullet", imgPath("bullet.png"))
-            .image("bullet2", imgPath("bullet2.png"))
-            .image("world", imgPath("earthbound-scarab-do-not-upload.png"))
-            .image("machine-gun", imgPath("tommy-gun.png"))
-            .image("pistol", imgPath("pistol.png"))
-            .image("sniper-rifle", imgPath("sniper-rifle.png"))
-            .audio("sniper-rifle-shot", audioPath("sniper-rifle-shot.mp3"))
-            .audio("empty-magazine", audioPath("empty-magazine.mp3")) // dry shot
-            .audio("weapon-loaded", audioPath("weapon-loaded.mp3"))
-            .audio("empty-magazine", audioPath("empty-magazine.mp3"))
-            .spritesheet("heart", imgPath("heart.png"), {
-                frameWidth: 16,
-                frameHeight: 16,
             })
             .tilemapTiledJSON("map", "./assets/maps/map.json")
             .image("tiles", "./assets/images/tileset.png");

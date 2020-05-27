@@ -23,7 +23,6 @@ export class MainScene extends Scene {
     private player!: Player;
     private enemies!: Group;
     private playerBullets!: Group;
-    private powerups!: Group;
 
     constructor() {
         super({ key: "MainScene" });
@@ -139,6 +138,7 @@ export class MainScene extends Scene {
             powerups,
             this.levelData.weapons
         );
+        this.sound.play("fight_music", { loop: true, volume: 0.3 });
 
         // test pickUps
         itemDropper.spawnHeart({
