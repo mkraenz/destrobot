@@ -69,7 +69,7 @@ export class MainScene extends Scene {
             collideWorldBounds: true,
         });
 
-        lvl.spawners.forEach(({ x, y, enemiesPerWave, waveTimeout, type }) => {
+        lvl.spawners.forEach(({ x, y, type, ...rest }) => {
             const spawnedEnemyData = lvl.enemies.find(e => e.name === type);
             if (!spawnedEnemyData) {
                 throw new Error(
@@ -81,9 +81,10 @@ export class MainScene extends Scene {
                 { x, y },
                 this.player,
                 this.enemies,
-                spawnedEnemyData
+                spawnedEnemyData,
+                rest.maxConcurrentEnemies
             );
-            spawner.spawnInterval(enemiesPerWave, waveTimeout);
+            spawner.spawnInterval(rest.enemiesPerWave, rest.waveTimeout);
         });
 
         this.physics.add.collider(

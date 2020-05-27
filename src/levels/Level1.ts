@@ -97,6 +97,7 @@ export const Level1 = {
             y: 1275,
             enemiesPerWave: 5,
             waveTimeout: 3000,
+            maxConcurrentEnemies: 10,
         },
         {
             type: "Robot",
@@ -104,6 +105,7 @@ export const Level1 = {
             y: 600,
             enemiesPerWave: 5,
             waveTimeout: 3000,
+            maxConcurrentEnemies: 10,
         },
         {
             type: "Megabot",
@@ -111,6 +113,7 @@ export const Level1 = {
             y: 1300,
             enemiesPerWave: 1,
             waveTimeout: 3000,
+            maxConcurrentEnemies: 3,
         },
     ],
 };
