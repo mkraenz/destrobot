@@ -1,6 +1,9 @@
 import { Input, Physics, Scene } from "phaser";
+import { IMovableActor } from "./IMovableActor";
 
 type Key = Input.Keyboard.Key;
+const DODGE_TIMEOUT = 300;
+const DODGE_COOLDOWN = 1000;
 
 export class PlayerMovementController {
     private keys: {
@@ -8,12 +11,16 @@ export class PlayerMovementController {
         left: Key;
         down: Key;
         right: Key;
+        dodge: Key;
     };
     private enabled = true;
+    private isDodging = false;
+    private onDodgeCooldown = false;
 
     constructor(
         scene: Scene,
-        private player: Physics.Arcade.Sprite & { wasHit: boolean },
+        private player: Physics.Arcade.Sprite & IMovableActor,
+        private playerVsEnemiesCollider: Physics.Arcade.Collider,
         private speed: number
     ) {
         const KeyCodes = Input.Keyboard.KeyCodes;
@@ -23,7 +30,8 @@ export class PlayerMovementController {
         const left = addKey(KeyCodes.A);
         const down = addKey(KeyCodes.S);
         const right = addKey(KeyCodes.D);
-        this.keys = { up, left, down, right };
+        const dodge = addKey(KeyCodes.SPACE);
+        this.keys = { up, left, down, right, dodge };
     }
 
     public setSpeed(speed: number) {
@@ -45,10 +53,18 @@ export class PlayerMovementController {
         if (!this.enabled) {
             return;
         }
+        if (this.isDodging) {
+            return;
+        }
         const up = this.keys.up;
         const down = this.keys.down;
         const left = this.keys.left;
         const right = this.keys.right;
+        const dodge = this.keys.dodge;
+        if (dodge.isDown && !this.onDodgeCooldown) {
+            this.dodge();
+            return;
+        }
         if (up.isDown && down.isUp) {
             this.setVelocityY(-this.speed);
         }
@@ -67,6 +83,22 @@ export class PlayerMovementController {
         if (up.isUp && down.isUp) {
             this.setVelocityY(0);
         }
+    }
+
+    private dodge() {
+        this.isDodging = true;
+        this.onDodgeCooldown = true;
+        const dodgeVel = this.player.body.velocity.scale(2);
+        this.player.setVelocity(dodgeVel.x, dodgeVel.y);
+        this.playerVsEnemiesCollider.active = false;
+        const onDodgeFinish = () => {
+            this.playerVsEnemiesCollider.active = true;
+            this.isDodging = false;
+            setTimeout(() => {
+                this.onDodgeCooldown = false;
+            }, DODGE_COOLDOWN);
+        };
+        setTimeout(onDodgeFinish, DODGE_TIMEOUT);
     }
 
     private setVelocityX(value: number) {

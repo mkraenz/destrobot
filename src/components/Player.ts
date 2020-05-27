@@ -2,8 +2,7 @@ import { Physics, Scene } from "phaser";
 import { DEV } from "../dev-config";
 import { EventType } from "../events/EventType";
 import { Color, toHex } from "../styles/Color";
-import { PlayerLevelController } from "./PlayerLevelController";
-import { PlayerMovementController } from "./PlayerMovementController";
+import { IMovableActor } from "./IMovableActor";
 import { PlayerShootingController } from "./PlayerShootingController";
 
 const DEAD = "dead";
@@ -26,7 +25,7 @@ interface IPlayerController {
     disable(): void;
 }
 
-export class Player extends Physics.Arcade.Sprite {
+export class Player extends Physics.Arcade.Sprite implements IMovableActor {
     public get wasHit() {
         return this.xWasHit;
     }
@@ -38,7 +37,7 @@ export class Player extends Physics.Arcade.Sprite {
     private xInvincible = false;
     private hitInvicibilityTimeout: number;
     private hitFreezeTimeout: number;
-    private movementController: IPlayerController;
+    private movementController?: IPlayerController;
     private shootingController: IPlayerController;
     private health: number;
     private maxHealth: number;
@@ -54,19 +53,12 @@ export class Player extends Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.body.setSize(this.width - 7, this.height - 7);
 
-        const movementController = new PlayerMovementController(
-            this.scene,
-            this,
-            cfg.speed
-        );
-        this.movementController = movementController;
         this.setScale(cfg.scale);
         this.shootingController = new PlayerShootingController(
             this.scene,
             this,
             { x: 10, y: 0 }
         );
-        new PlayerLevelController(this.scene, movementController);
         this.setCollideWorldBounds(true);
         this.setBounce(2);
         this.animate();
@@ -75,6 +67,10 @@ export class Player extends Physics.Arcade.Sprite {
         this.scene.events.on(EventType.HeartCollected, () =>
             this.handleHeartCollected()
         );
+    }
+
+    public setMovementController(controller: IPlayerController) {
+        this.movementController = controller;
     }
 
     public getHealth() {
@@ -111,7 +107,7 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.wasHit) {
             this.setTint(toHex(Color.Red));
         }
-        this.movementController.update();
+        this.movementController?.update();
         this.shootingController.update();
 
         this.setRenderFlip();
@@ -138,7 +134,7 @@ export class Player extends Physics.Arcade.Sprite {
         if (!this.body.enable) {
             return;
         }
-        this.movementController.disable();
+        this.movementController?.disable();
         this.shootingController.disable();
         this.disableBody();
         this.play(DEAD);

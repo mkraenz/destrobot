@@ -34,7 +34,6 @@ export class Bullet extends Physics.Arcade.Sprite {
     }
 
     public onHit() {
-        // TODO sounds
         // TODO particle effect
     }
 }

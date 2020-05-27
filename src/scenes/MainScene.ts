@@ -6,6 +6,8 @@ import { EnemySpawner } from "../components/EnemySpawner";
 import { IPowerUp } from "../components/IPowerUp";
 import { ItemDropper } from "../components/ItemDropper";
 import { Player } from "../components/Player";
+import { PlayerLevelController } from "../components/PlayerLevelController";
+import { PlayerMovementController } from "../components/PlayerMovementController";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { ILevel } from "../levels/ILevel";
 import { HealthHud } from "./hud/HealthHud";
@@ -86,16 +88,29 @@ export class MainScene extends Scene {
             spawner.spawnInterval(rest.enemiesPerWave, rest.waveTimeout);
         });
 
-        this.physics.add.collider(this.player, this.enemies, (player, e) => {
-            const enemy = e as Enemy;
-            const hitApplied = this.player.onHit(enemy.damage);
-            if (hitApplied) {
-                this.cameras.main.shake(
-                    CAMERA_SHAKE_DURATION,
-                    CAMERA_SHAKE_INTENSITY
-                );
+        const playerVsEnemyCollider = this.physics.add.collider(
+            this.player,
+            this.enemies,
+            (player, e) => {
+                const enemy = e as Enemy;
+                const hitApplied = this.player.onHit(enemy.damage);
+                if (hitApplied) {
+                    this.cameras.main.shake(
+                        CAMERA_SHAKE_DURATION,
+                        CAMERA_SHAKE_INTENSITY
+                    );
+                }
             }
-        });
+        );
+        const movementController = new PlayerMovementController(
+            this,
+            this.player,
+            playerVsEnemyCollider,
+            lvl.player.speed
+        );
+        new PlayerLevelController(this, movementController);
+        this.player.setMovementController(movementController);
+
         this.physics.add.collider(this.enemies, undefined as any);
         this.physics.add.collider(
             this.enemies,
