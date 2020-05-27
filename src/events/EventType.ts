@@ -5,4 +5,5 @@ export enum EventType {
     WeaponPickedUp = "weapon-picked-up",
     HeartCollected = "heart-collected",
     DropItem = "drop-item",
+    EnemyKilled = "enemy-killed",
 }

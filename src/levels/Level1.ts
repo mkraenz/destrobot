@@ -82,6 +82,7 @@ export const Level1 = {
             health: 5,
             speed: 50,
             scale: 1,
+            score: 10,
         },
         {
             name: "Megabot",
@@ -91,6 +92,7 @@ export const Level1 = {
             health: 20,
             speed: 50,
             scale: 3,
+            score: 30,
         },
     ],
     spawners: [

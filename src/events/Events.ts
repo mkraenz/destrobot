@@ -6,3 +6,7 @@ export interface IDropItemEvent {
 export interface IWeaponPickedUpEvent {
     weaponName: string;
 }
+
+export interface IEnemyKilledEvent {
+    score: number;
+}

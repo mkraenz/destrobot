@@ -1,5 +1,7 @@
 import { random } from "lodash";
 import { GameObjects, Physics, Scene } from "phaser";
+import { IEnemyKilledEvent } from "../events/Events";
+import { EventType } from "../events/EventType";
 import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
 
@@ -13,6 +15,7 @@ export interface IEnemyConfig {
     dropFrequency: number;
     speed: number;
     damage: number;
+    score: number;
 }
 
 export class Enemy extends Physics.Arcade.Sprite {
@@ -20,6 +23,7 @@ export class Enemy extends Physics.Arcade.Sprite {
     public readonly damage: number;
     private dropFrequency: number;
     private speed: number;
+    private score: number;
 
     constructor(
         scene: Scene,
@@ -32,6 +36,7 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.dropFrequency = cfg.dropFrequency;
         this.speed = cfg.speed;
         this.damage = cfg.damage;
+        this.score = cfg.score;
         this.setScale(cfg.scale);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -64,7 +69,8 @@ export class Enemy extends Physics.Arcade.Sprite {
         if (this.isRandomDrop()) {
             this.scene.events.emit("drop-item", { x: this.x, y: this.y });
         }
-        this.scene.events.emit("enemy-killed");
+        const enemyKilledEventData: IEnemyKilledEvent = { score: this.score };
+        this.scene.events.emit(EventType.EnemyKilled, enemyKilledEventData);
         this.setActive(false);
         this.disableBody(true);
         this.setVisible(false);

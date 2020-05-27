@@ -1,4 +1,6 @@
 import { Scene } from "phaser";
+import { IEnemyKilledEvent } from "../../events/Events";
+import { EventType } from "../../events/EventType";
 import { TextConfig } from "../../styles/Text";
 
 export class ScoreHud extends Scene {
@@ -16,9 +18,12 @@ export class ScoreHud extends Scene {
             TextConfig.xl
         );
         const mainScene = this.scene.get("MainScene");
-        mainScene.events.on("enemy-killed", () => {
-            this.score += 10;
-            scoreText.setText(`Score: ${this.score}`);
-        });
+        mainScene.events.on(
+            EventType.EnemyKilled,
+            (data: IEnemyKilledEvent) => {
+                this.score += data.score;
+                scoreText.setText(`Score: ${this.score}`);
+            }
+        );
     }
 }
