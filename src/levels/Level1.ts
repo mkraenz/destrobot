@@ -82,7 +82,7 @@ export const Level1 = {
         },
         {
             name: "Megabot",
-            damage: 1,
+            damage: 2,
             texture: "robot",
             dropFrequency: 2,
             health: 20,

@@ -84,13 +84,13 @@ export class Player extends Physics.Arcade.Sprite {
     }
 
     /** @returns true if hit applied, else false */
-    public onHit(): boolean {
+    public onHit(damage: number): boolean {
         if (this.xWasHit || this.xInvincible) {
             return false;
         }
         this.xWasHit = true;
         this.xInvincible = true;
-        this.health--;
+        this.health -= damage;
         setTimeout(() => {
             this.xWasHit = false;
         }, this.hitFreezeTimeout);
@@ -104,10 +104,9 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.health === 0) {
             this.die();
         }
+        this.clearTint();
         if (this.wasHit) {
             this.setTint(toHex(Color.Red));
-        } else {
-            this.clearTint();
         }
         this.movementController.update();
         this.shootingController.update();

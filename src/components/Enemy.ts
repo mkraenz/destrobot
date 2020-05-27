@@ -12,10 +12,12 @@ export interface IEnemyConfig {
     health: number;
     dropFrequency: number;
     speed: number;
+    damage: number;
 }
 
 export class Enemy extends Physics.Arcade.Sprite {
     public health: number;
+    public readonly damage: number;
     private dropFrequency: number;
     private speed: number;
 
@@ -29,6 +31,7 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.health = cfg.health;
         this.dropFrequency = cfg.dropFrequency;
         this.speed = cfg.speed;
+        this.damage = cfg.damage;
         this.setScale(cfg.scale);
         scene.add.existing(this);
         scene.physics.add.existing(this);
