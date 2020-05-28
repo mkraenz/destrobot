@@ -68,6 +68,9 @@ export class Weapon implements IWeapon {
     }
 
     public reload() {
+        if (this.bulletsLeftInMagazine === this.magazine) {
+            return;
+        }
         this.reloading = true;
         // explicitely use window for typescript type
         const reloadSoundTimer = window.setTimeout(
