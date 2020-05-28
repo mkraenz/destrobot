@@ -1,4 +1,4 @@
-import { Math, Physics, Scene } from "phaser";
+import { Input, Math, Physics, Scene } from "phaser";
 import { EventType } from "../events/EventType";
 import { IPoint } from "../utils/IPoint";
 import { IWeapon } from "./IWeapon";
@@ -30,6 +30,11 @@ export class PlayerShootingController {
         });
         scene.input.on("pointerup", () => (this.leftIsDown = false));
 
+        const KeyCodes = Input.Keyboard.KeyCodes;
+        const addKey = (key: number | string) =>
+            scene.input.keyboard.addKey(key);
+        const reloadKey = addKey(KeyCodes.R);
+        reloadKey.on("down", () => this.reload());
         this.scene.events.on(
             EventType.WeaponChanged,
             (data: { weapon: IWeapon }) => this.setWeapon(data.weapon)

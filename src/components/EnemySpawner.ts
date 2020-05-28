@@ -24,8 +24,12 @@ export class EnemySpawner {
         if (this.reachdGlobalConcurrentEnemyCount()) {
             return [];
         }
-        this.scene.sound.play("electric-buzz");
-        return Array(n)
+        const diffToMax = this.maxConcurrentEnemies - this.countActive();
+        const newEnemyCount = Math.min(n, diffToMax);
+        if (newEnemyCount > 0) {
+            this.scene.sound.play("electric-buzz");
+        }
+        return Array(newEnemyCount)
             .fill(0)
             .map(_ => {
                 const enemy = new Enemy(this.scene, this.target, {
@@ -46,11 +50,12 @@ export class EnemySpawner {
         }, timeout);
     }
 
+    private countActive() {
+        return this.spawnedEnemies.filter(e => e.active).length;
+    }
+
     private reachedMaxConcurrentEnemies() {
-        return (
-            this.spawnedEnemies.filter(e => e.active).length >
-            this.maxConcurrentEnemies
-        );
+        return this.countActive() > this.maxConcurrentEnemies;
     }
 
     private reachdGlobalConcurrentEnemyCount() {
