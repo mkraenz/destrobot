@@ -1,4 +1,4 @@
-import { Input, Math, Physics, Scene } from "phaser";
+import { Math, Physics, Scene } from "phaser";
 import { EventType } from "../events/EventType";
 import { IPoint } from "../utils/IPoint";
 import { IWeapon } from "./IWeapon";
@@ -10,7 +10,7 @@ export class PlayerShootingController {
     private pos: Vec;
     private dir: Vec;
     private enabled = true;
-    private isDown = false;
+    private leftIsDown = false;
 
     constructor(
         private scene: Scene,
@@ -20,14 +20,16 @@ export class PlayerShootingController {
     ) {
         this.pos = this.nextPos();
         this.dir = new Vec(1, 0);
-        scene.input.on("pointerdown", () => (this.isDown = true));
-        scene.input.on("pointerup", () => (this.isDown = false));
 
-        const KeyCodes = Input.Keyboard.KeyCodes;
-        const addKey = (key: number | string) =>
-            scene.input.keyboard.addKey(key);
-        const reload = addKey(KeyCodes.R);
-        reload.on("down", () => this.reload());
+        scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            if (pointer.rightButtonDown()) {
+                this.reload(); // only reload once, but allow shooting by holding
+            } else {
+                this.leftIsDown = true;
+            }
+        });
+        scene.input.on("pointerup", () => (this.leftIsDown = false));
+
         this.scene.events.on(
             EventType.WeaponChanged,
             (data: { weapon: IWeapon }) => this.setWeapon(data.weapon)
@@ -40,7 +42,7 @@ export class PlayerShootingController {
 
     public update() {
         this.pos = this.nextPos();
-        if (this.isDown) {
+        if (this.leftIsDown) {
             this.shoot();
         }
     }

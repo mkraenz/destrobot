@@ -14,9 +14,9 @@ const FADEOUT = 0;
 const TEXT_SPEED = 100;
 const CONTROLS = `WASD > move
 Space > dodge
-Left mouse click > fire
-Mouse movement > aim
-R > reload`;
+Left mouse button > fire
+Right mouse button > reload
+Mouse movement > aim`;
 
 export class TitleScene extends Scene {
     private electricBuzzTimer?: number;
