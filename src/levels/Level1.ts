@@ -72,7 +72,7 @@ export const Level1 = {
         hitFreezeTimeout: 100,
         texture: "player",
         scale: 2,
-        speed: 200,
+        speed: 300,
     },
     enemies: [
         {

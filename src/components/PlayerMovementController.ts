@@ -80,11 +80,17 @@ export class PlayerMovementController {
         if (up.isUp && down.isUp) {
             this.setVelocityY(0);
         }
+        this.normalizeSpeed();
         // dodge last so that the direction input gets applied
         if (dodge.isDown && !this.onDodgeCooldown) {
             this.dodge();
             return;
         }
+    }
+
+    private normalizeSpeed() {
+        const vel = this.player.body.velocity.normalize().scale(this.speed);
+        this.player.setVelocity(vel.x, vel.y);
     }
 
     private dodge() {

@@ -60,7 +60,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
             { x: 10, y: 0 }
         );
         this.setCollideWorldBounds(true);
-        this.setBounce(2);
+        this.setBounce(0); // fixes dodge roll
         this.animate();
         this.play(IDLE);
 
