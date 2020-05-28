@@ -100,7 +100,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
     }
 
     public update() {
-        if (this.health === 0) {
+        if (this.health <= 0) {
             this.die();
         }
         this.clearTint();
