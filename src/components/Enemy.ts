@@ -1,11 +1,10 @@
 import { random } from "lodash";
-import { GameObjects, Physics, Scene } from "phaser";
+import { GameObjects, Math, Physics, Scene } from "phaser";
 import { IEnemyKilledEvent } from "../events/Events";
 import { EventType } from "../events/EventType";
 import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
-
-const MIN_DISTANCE_TO_TARGET = 5;
+import { IWeapon } from "./IWeapon";
 
 export interface IEnemyConfig {
     name: string;
@@ -17,7 +16,12 @@ export interface IEnemyConfig {
     damage: number;
     score: number;
     tint?: string;
+    attackRange: number;
+    weapon?: string;
 }
+
+type Vec = Math.Vector2;
+const Vec = Math.Vector2;
 
 export class Enemy extends Physics.Arcade.Sprite {
     public health: number;
@@ -25,12 +29,14 @@ export class Enemy extends Physics.Arcade.Sprite {
     private dropFrequency: number;
     private speed: number;
     private score: number;
-    private baseTint!: string;
+    private baseTint?: string;
+    private attackRange: number;
 
     constructor(
         scene: Scene,
         private target: GameObjects.Sprite,
-        cfg: IEnemyConfig & IPoint
+        cfg: IEnemyConfig & IPoint,
+        private weapon?: IWeapon & { getBulletsLeft(): number }
     ) {
         super(scene, cfg.x, cfg.y, cfg.texture);
         this.name = cfg.name;
@@ -39,12 +45,13 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.speed = cfg.speed;
         this.damage = cfg.damage;
         this.score = cfg.score;
+        this.attackRange = cfg.attackRange;
         this.setScale(cfg.scale);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         if (cfg.tint) {
             this.baseTint = cfg.tint;
-            this.applyBaseTint();
+            this.maybeApplyBaseTint();
         }
     }
 
@@ -65,9 +72,14 @@ export class Enemy extends Physics.Arcade.Sprite {
     }
 
     public update() {
-        this.move(this.target);
         if (this.health <= 0) {
             this.die();
+        }
+        if (this.isInAttackRange()) {
+            this.body.stop();
+            this.attack();
+        } else {
+            this.move(this.target);
         }
     }
 
@@ -89,21 +101,38 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.scene.sound.play("enemy-hit");
         setTimeout(() => {
             this.clearTint();
-            if (this.baseTint) {
-                this.applyBaseTint();
-            }
+            this.maybeApplyBaseTint();
         }, 200);
     }
 
-    private isCloseToTarget() {
-        if (!this.target) {
-            return false;
+    private attack() {
+        if (!this.weapon) {
+            return;
         }
-        const dist = this.dist(this.target);
-        return dist < MIN_DISTANCE_TO_TARGET;
+        if (this.weapon.getBulletsLeft() === 0) {
+            return this.weapon.reload();
+        }
+        this.fire();
     }
 
-    private dist(other: IPoint) {
+    private fire() {
+        if (!this.weapon) {
+            return;
+        }
+        const { x: tx, y: ty } = this.target;
+        const { x, y } = this;
+        const targetPos = new Vec(tx, ty);
+        const pos = new Vec(x, y);
+        const dir = targetPos.subtract(pos).normalize();
+        this.weapon.fire(pos, dir);
+    }
+
+    private isInAttackRange() {
+        const dist = this.dist();
+        return dist < this.attackRange;
+    }
+
+    private dist(other: IPoint = this.target) {
         return Phaser.Math.Distance.Between(this.x, this.y, other.x, other.y);
     }
 
@@ -114,7 +143,9 @@ export class Enemy extends Physics.Arcade.Sprite {
         return random(this.dropFrequency - 1) === this.dropFrequency - 1;
     }
 
-    private applyBaseTint() {
-        this.setTint(toHex(this.baseTint));
+    private maybeApplyBaseTint() {
+        if (this.baseTint) {
+            this.setTint(toHex(this.baseTint));
+        }
     }
 }

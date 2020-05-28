@@ -2,8 +2,11 @@ import { random } from "lodash";
 import { GameObjects, Physics, Scene } from "phaser";
 import { IPoint } from "../utils/IPoint";
 import { Enemy, IEnemyConfig } from "./Enemy";
+import { IWeaponConfig, Weapon } from "./weapons/Weapon";
 
 const GLOBAL_MAX_CONCURRENT_ENEMIES = 150;
+
+type Group = Physics.Arcade.Group;
 
 export class EnemySpawner {
     private spawnedEnemies: Enemy[] = [];
@@ -12,9 +15,11 @@ export class EnemySpawner {
         private scene: Scene,
         private at: IPoint,
         private target: GameObjects.Sprite,
-        private enemies: Physics.Arcade.Group,
+        private enemies: Group,
         private cfg: IEnemyConfig,
-        private maxConcurrentEnemies: number
+        private weaponCfg: IWeaponConfig | undefined,
+        private maxConcurrentEnemies: number,
+        private enemyBullets: Group
     ) {}
 
     public spawn(n: number) {
@@ -32,11 +37,23 @@ export class EnemySpawner {
         return Array(newEnemyCount)
             .fill(0)
             .map(_ => {
-                const enemy = new Enemy(this.scene, this.target, {
-                    ...this.cfg,
-                    x: this.at.x + random(100),
-                    y: this.at.y + random(100),
-                });
+                let weapon;
+                if (this.cfg.weapon && this.weaponCfg) {
+                    weapon = new Weapon(this.scene, this.enemyBullets, {
+                        ...this.weaponCfg,
+                        isEnemyWeapon: true,
+                    });
+                }
+                const enemy = new Enemy(
+                    this.scene,
+                    this.target,
+                    {
+                        ...this.cfg,
+                        x: this.at.x + random(100),
+                        y: this.at.y + random(100),
+                    },
+                    weapon
+                );
                 enemy.create();
                 return enemy;
             });

@@ -1,3 +1,5 @@
+import { Color } from "../styles/Color";
+
 export const Level1 = {
     map: {
         key: "map",
@@ -74,6 +76,22 @@ export const Level1 = {
         scale: 2,
         speed: 300,
     },
+    enemyWeapons: [
+        {
+            name: "Pistol",
+            damage: 1,
+            bulletSpeed: 100,
+            ttl: 2000,
+            cooldown: 500,
+            texture: "pistol",
+            scale: 1,
+            pickUpScale: 0.5,
+            bulletTexture: "bullet2",
+            magazine: 8,
+            reloadTime: 1000,
+            fireSoundKey: "sniper-rifle-shot",
+        },
+    ],
     enemies: [
         {
             name: "Robot",
@@ -84,6 +102,20 @@ export const Level1 = {
             speed: 125,
             scale: 1,
             score: 10,
+            attackRange: 0,
+        },
+        {
+            name: "Rangebot",
+            damage: 1,
+            texture: "robot",
+            dropFrequency: 10, // on average, one in dropFrequency kills will drop something
+            health: 5,
+            speed: 125,
+            scale: 1,
+            score: 10,
+            attackRange: 200,
+            weapon: "Pistol",
+            tint: Color.Green,
         },
         {
             name: "FastBot2k",
@@ -95,6 +127,7 @@ export const Level1 = {
             scale: 1,
             score: 10,
             tint: "#0000FF", // blue
+            attackRange: 0, // = max distance to attack the player
         },
         {
             name: "Megabot",
@@ -105,6 +138,7 @@ export const Level1 = {
             speed: 50,
             scale: 3,
             score: 30,
+            attackRange: 0,
         },
         {
             name: "DestroBot",
@@ -116,6 +150,7 @@ export const Level1 = {
             scale: 4,
             score: 200,
             tint: "#FF8D13",
+            attackRange: 0,
         },
     ],
     spawners: [
@@ -128,7 +163,7 @@ export const Level1 = {
             maxConcurrentEnemies: 10,
         },
         {
-            type: "Robot",
+            type: "Rangebot",
             x: 1250,
             y: 600,
             enemiesPerWave: 2,
@@ -141,7 +176,7 @@ export const Level1 = {
             y: 600,
             enemiesPerWave: 2,
             waveTimeout: 3000,
-            maxConcurrentEnemies: 6,
+            maxConcurrentEnemies: 4,
         },
         {
             type: "Megabot",

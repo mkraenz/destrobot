@@ -25,6 +25,7 @@ export class MainScene extends Scene {
     private player!: Player;
     private enemies!: Group;
     private playerBullets!: Group;
+    private enemyBullets!: Group;
 
     constructor() {
         super({ key: "MainScene" });
@@ -67,7 +68,10 @@ export class MainScene extends Scene {
             enable: true,
             bounceX: 10,
             bounceY: 10,
-            collideWorldBounds: true,
+        });
+        this.enemyBullets = this.physics.add.group([], {
+            active: true,
+            enable: true,
         });
 
         lvl.spawners.forEach(({ x, y, type, ...rest }) => {
@@ -77,13 +81,18 @@ export class MainScene extends Scene {
                     `Could not parse level spawnedEnemyData for type ${type}`
                 );
             }
+            const enemyWeapon = lvl.enemyWeapons.find(
+                w => w.name === spawnedEnemyData.weapon
+            );
             const spawner = new EnemySpawner(
                 this,
                 { x, y },
                 this.player,
                 this.enemies,
                 spawnedEnemyData,
-                rest.maxConcurrentEnemies
+                enemyWeapon,
+                rest.maxConcurrentEnemies,
+                this.enemyBullets
             );
             spawner.spawnInterval(rest.enemiesPerWave, rest.waveTimeout);
         });
@@ -102,10 +111,24 @@ export class MainScene extends Scene {
                 }
             }
         );
+        const playerVsEnemyBulletsCollider = this.physics.add.collider(
+            this.player,
+            this.enemyBullets,
+            (player, b) => {
+                const bullet = b as Bullet;
+                const hitApplied = this.player.onHit(bullet.damage);
+                if (hitApplied) {
+                    this.cameras.main.shake(
+                        CAMERA_SHAKE_DURATION,
+                        CAMERA_SHAKE_INTENSITY
+                    );
+                }
+            }
+        );
         const movementController = new PlayerMovementController(
             this,
             this.player,
-            playerVsEnemyCollider,
+            [playerVsEnemyCollider, playerVsEnemyBulletsCollider],
             lvl.player.speed
         );
         new PlayerLevelController(this, movementController);

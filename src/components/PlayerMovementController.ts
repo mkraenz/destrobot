@@ -21,7 +21,7 @@ export class PlayerMovementController {
     constructor(
         scene: Scene,
         private player: Physics.Arcade.Sprite & IMovableActor,
-        private playerVsEnemiesCollider: Physics.Arcade.Collider,
+        private playerVsDangerousThingColliders: Physics.Arcade.Collider[],
         private speed: number
     ) {
         const KeyCodes = Input.Keyboard.KeyCodes;
@@ -98,9 +98,11 @@ export class PlayerMovementController {
         this.onDodgeCooldown = true;
         const dodgeVel = this.player.body.velocity.scale(DODGE_SPEED_UP_FACTOR);
         this.player.setVelocity(dodgeVel.x, dodgeVel.y);
-        this.playerVsEnemiesCollider.active = false;
+        this.playerVsDangerousThingColliders.forEach(c => (c.active = false));
         const onDodgeFinish = () => {
-            this.playerVsEnemiesCollider.active = true;
+            this.playerVsDangerousThingColliders.forEach(
+                c => (c.active = true)
+            );
             this.isDodging = false;
             setTimeout(() => {
                 this.onDodgeCooldown = false;

@@ -3,7 +3,7 @@ import { EventType } from "../../events/EventType";
 import { Bullet } from "../Bullet";
 import { IWeapon } from "../IWeapon";
 
-interface IWeaponConfig {
+interface IWeaponOnlyConfig {
     name: string;
     texture: string;
     cooldown: number;
@@ -11,6 +11,13 @@ interface IWeaponConfig {
     reloadTime: number;
     fireSoundKey: string;
 }
+
+export type IWeaponConfig = IWeaponOnlyConfig & {
+    bulletSpeed: number;
+    damage: number;
+    ttl: number;
+    bulletTexture: string;
+};
 
 const RELOAD_SOUND_LENGTH = 350;
 const WEAPON_EMPTY_SOUND_TIMEOUT = 150;
@@ -31,16 +38,12 @@ export class Weapon implements IWeapon {
     private bulletsLeftInMagazine: number;
     private reloadTime: number;
     private fireSoundKey: string;
+    private isEnemyWeapon: boolean;
 
     constructor(
         private scene: Scene,
         private bullets: Physics.Arcade.Group,
-        cfg: IWeaponConfig & {
-            bulletSpeed: number;
-            damage: number;
-            ttl: number;
-            bulletTexture: string;
-        }
+        cfg: IWeaponConfig & { isEnemyWeapon?: boolean }
     ) {
         this.texture = cfg.texture;
         this.cooldown = cfg.cooldown;
@@ -53,17 +56,22 @@ export class Weapon implements IWeapon {
         this.reloadTime = cfg.reloadTime;
         this.bulletsLeftInMagazine = cfg.magazine;
         this.fireSoundKey = cfg.fireSoundKey;
+        this.isEnemyWeapon = !!cfg.isEnemyWeapon;
 
         this.scene.events.on(EventType.AmmoCollected, () =>
             this.instantReload(true)
         );
     }
 
+    public getBulletsLeft() {
+        return this.bulletsLeftInMagazine;
+    }
+
     public reload() {
         this.reloading = true;
         // explicitely use window for typescript type
         const reloadSoundTimer = window.setTimeout(
-            () => this.scene.sound.play("weapon-loaded"),
+            () => this.playSoundAsPlayer("weapon-loaded"),
             this.reloadTime - RELOAD_SOUND_LENGTH
         );
         const reloadTimer = window.setTimeout(
@@ -78,11 +86,13 @@ export class Weapon implements IWeapon {
             return;
         }
         if (this.bulletsLeftInMagazine <= 0) {
-            this.scene.sound.play("empty-magazine");
+            this.playSoundAsPlayer("empty-magazine");
             this.setCooldown();
             return;
         }
-        this.scene.sound.play(this.fireSoundKey, { volume: 0.8 });
+        this.playSoundAsPlayer(this.fireSoundKey, {
+            volume: 0.8,
+        });
         const bullet = new Bullet(this.scene, {
             pos,
             vel: dir,
@@ -95,11 +105,13 @@ export class Weapon implements IWeapon {
         bullet.create();
 
         this.bulletsLeftInMagazine--;
-        this.scene.events.emit(EventType.WeaponFired);
+        if (!this.isEnemyWeapon) {
+            this.scene.events.emit(EventType.WeaponFired);
+        }
         this.setCooldown();
         if (this.bulletsLeftInMagazine === 0) {
             setTimeout(
-                () => this.scene.sound.play("weapon-last-bullet-shot"),
+                () => this.playSoundAsPlayer("weapon-last-bullet-shot"),
                 WEAPON_EMPTY_SOUND_TIMEOUT
             );
         }
@@ -108,12 +120,26 @@ export class Weapon implements IWeapon {
     private instantReload(playReload = false) {
         this.reloading = false;
         this.bulletsLeftInMagazine = this.magazine;
-        this.scene.events.emit(EventType.WeaponReloaded);
+        if (!this.isEnemyWeapon) {
+            this.scene.events.emit(EventType.WeaponReloaded);
+        }
         this.reloadTimers.forEach(timer => clearTimeout(timer));
         this.reloadTimers = [];
         if (playReload) {
             // used for ammo pickup
-            this.scene.sound.play("weapon-loaded");
+            this.playSoundAsPlayer("weapon-loaded");
+        }
+    }
+
+    private playSoundAsPlayer(
+        key: string,
+        extra?:
+            | Phaser.Types.Sound.SoundConfig
+            | Phaser.Types.Sound.SoundMarker
+            | undefined
+    ) {
+        if (!this.isEnemyWeapon) {
+            this.scene.sound.play(key, extra);
         }
     }
 
