@@ -25,6 +25,7 @@ export class Enemy extends Physics.Arcade.Sprite {
     private dropFrequency: number;
     private speed: number;
     private score: number;
+    private baseTint!: string;
 
     constructor(
         scene: Scene,
@@ -42,7 +43,8 @@ export class Enemy extends Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         if (cfg.tint) {
-            this.setTint(toHex(cfg.tint));
+            this.baseTint = cfg.tint;
+            this.applyBaseTint();
         }
     }
 
@@ -85,7 +87,12 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.health -= damage;
         this.setTint(toHex(Color.Red));
         this.scene.sound.play("enemy-hit");
-        setTimeout(() => this.clearTint(), 200);
+        setTimeout(() => {
+            this.clearTint();
+            if (this.baseTint) {
+                this.applyBaseTint();
+            }
+        }, 200);
     }
 
     private isCloseToTarget() {
@@ -105,5 +112,9 @@ export class Enemy extends Physics.Arcade.Sprite {
         // We want that a drop occurs once in dropFrequency many cases, thus the -1.
         // For example, dropFrequency=1 means every kill will drop something.
         return random(this.dropFrequency - 1) === this.dropFrequency - 1;
+    }
+
+    private applyBaseTint() {
+        this.setTint(toHex(this.baseTint));
     }
 }

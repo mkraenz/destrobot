@@ -4,25 +4,34 @@ import { Color } from "./Color";
 type Style = Partial<GameObjects.TextStyle>;
 
 export const TextConfig: { [key: string]: Style } = {
+    title: {
+        fontFamily: "Android7",
+        fontSize: "118px",
+        color: Color.White,
+    },
+    version: {
+        fontFamily: "Android7",
+        color: Color.White,
+    },
     xl: {
-        fontFamily: "Metamorphous",
+        fontFamily: "Android7",
         fontSize: "32px",
         color: Color.White,
     },
     lg: {
-        fontFamily: "Metamorphous",
+        fontFamily: "Android7",
         fontSize: "20px",
-        color: "#000000",
+        color: Color.White,
     },
     md: {
-        fontFamily: "Metamorphous",
+        fontFamily: "Android7",
         fontSize: "16px",
-        color: "#000000",
+        color: Color.White,
     },
     sm: {
-        fontFamily: "Metamorphous",
+        fontFamily: "Android7",
         fontSize: "12px",
-        color: "#000000",
+        color: Color.White,
     },
     debug: {
         fontFamily: "Courier",

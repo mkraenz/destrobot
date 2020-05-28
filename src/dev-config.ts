@@ -3,4 +3,6 @@ export const DEV = isProd
     ? {}
     : {
           playerInvicible: true,
+          skipTitle: false,
+          startInWinScene: false,
       };

@@ -106,6 +106,17 @@ export const Level1 = {
             scale: 3,
             score: 30,
         },
+        {
+            name: "DestroBot",
+            damage: 3,
+            texture: "robot",
+            dropFrequency: 1,
+            health: 30,
+            speed: 150,
+            scale: 4,
+            score: 200,
+            tint: "#FF8D13",
+        },
     ],
     spawners: [
         {
@@ -128,9 +139,9 @@ export const Level1 = {
             type: "FastBot2k",
             x: 1250,
             y: 600,
-            enemiesPerWave: 3,
+            enemiesPerWave: 2,
             waveTimeout: 3000,
-            maxConcurrentEnemies: 9,
+            maxConcurrentEnemies: 6,
         },
         {
             type: "Megabot",
@@ -139,6 +150,14 @@ export const Level1 = {
             enemiesPerWave: 1,
             waveTimeout: 3000,
             maxConcurrentEnemies: 3,
+        },
+        {
+            type: "DestroBot",
+            x: 1370,
+            y: 1300,
+            enemiesPerWave: 1,
+            waveTimeout: 30000,
+            maxConcurrentEnemies: 1,
         },
     ],
 };

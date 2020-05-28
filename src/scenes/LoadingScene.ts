@@ -1,8 +1,10 @@
 import { GameObjects, Scene } from "phaser";
+import { DEV } from "../dev-config";
 import { Level1 } from "../levels/Level1";
 import { Color, toHex } from "../styles/Color";
 import { setDefaultTextStyle } from "../styles/Text";
 import { MainScene } from "./MainScene";
+import { TitleScene } from "./TitleScene";
 
 const FADEOUT_TIME = 0;
 
@@ -60,8 +62,15 @@ export class LoadingScene extends Scene {
         this.load.on("fileprogress", this.getAssetTextWriter(assetText));
         this.load.on("complete", () => {
             this.cameras.main.once("camerafadeoutcomplete", (camera: any) => {
-                this.scene.add("MainScene", MainScene, true, Level1);
-                this.scene.remove("LoadingScene");
+                if (DEV.startInWinScene) {
+                    // this.scene.add("WinScene", WinScene, true);
+                    throw new Error("No win screen defined yet");
+                } else if (DEV.skipTitle) {
+                    this.scene.add("MainScene", MainScene, true, Level1);
+                } else {
+                    this.scene.add("TitleScene", TitleScene, true);
+                }
+                this.scene.remove(this);
             });
             this.cameras.main.fadeOut(FADEOUT_TIME);
         });
@@ -100,6 +109,10 @@ export class LoadingScene extends Scene {
             .image("machine-gun", imgPath("tommy-gun.png"))
             .image("pistol", imgPath("pistol.png"))
             .image("sniper-rifle", imgPath("sniper-rifle.png"))
+            .image("title-background", imgPath("metal-plaque.jpg"))
+            .audio("typing", audioPath("teletype.mp3"))
+            .audio("title-ambient", audioPath("sci-fi-sfx-loop-ambient-01.mp3"))
+            .audio("electric-buzz", audioPath("electric-buzz.mp3"))
             .audio("sniper-rifle-shot", audioPath("sniper-rifle-shot.mp3"))
             .audio("empty-magazine", audioPath("empty-magazine.mp3")) // dry shot
             .audio("weapon-loaded", audioPath("weapon-loaded.mp3"))

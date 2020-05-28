@@ -14,3 +14,5 @@ distributed via <http://opengameart.org/users/varkalandar>
 - `impact-meat.mp3` - <https://opengameart.org/content/impact>
 - <https://opengameart.org/content/weapons-fighting-sounds>
 - `robot-off.mp3` - cut out from <https://opengameart.org/content/robot-1>
+- `typing.mp3` - Sfx By Nicole Marie T, Changes: Conversion to mp3, cutting. Available at [OpenGameArt](https://opengameart.org/content/typing-on-computer-keyboard-sfx-sound-effect).
+- `electric-buzz.mp3` - <https://opengameart.org/content/electric-buzz>

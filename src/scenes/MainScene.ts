@@ -153,7 +153,7 @@ export class MainScene extends Scene {
             powerups,
             this.levelData.weapons
         );
-        this.sound.play("fight_music", { loop: true, volume: 0.3 });
+        this.sound.play("fight_music", { loop: true, volume: 0.1 });
 
         // test pickUps
         itemDropper.spawnHeart({

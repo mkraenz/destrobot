@@ -24,6 +24,7 @@ export class EnemySpawner {
         if (this.reachdGlobalConcurrentEnemyCount()) {
             return [];
         }
+        this.scene.sound.play("electric-buzz");
         return Array(n)
             .fill(0)
             .map(_ => {
