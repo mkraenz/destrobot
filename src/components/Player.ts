@@ -33,6 +33,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
     public get invincible() {
         return this.xInvincible;
     }
+
     private xWasHit = false;
     private xInvincible = false;
     private hitInvicibilityTimeout: number;
@@ -44,6 +45,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
 
     constructor(scene: Scene, cfg: IPlayerConfig) {
         super(scene, cfg.x, cfg.y, cfg.texture);
+        this.name = "Player";
         this.health = cfg.health;
         this.hitInvicibilityTimeout = cfg.hitInvicibilityTimeout;
         this.hitFreezeTimeout = cfg.hitFreezeTimeout;
@@ -89,7 +91,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
         this.xWasHit = true;
         this.xInvincible = true;
         this.health -= damage;
-        this.scene.sound.play("player-hit");
+        this.scene.sound.play("player-hit", { volume: 2 });
         setTimeout(() => {
             this.xWasHit = false;
         }, this.hitFreezeTimeout);
@@ -100,10 +102,10 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
     }
 
     public update() {
+        this.clearTint();
         if (this.health <= 0) {
             this.die();
         }
-        this.clearTint();
         if (this.wasHit) {
             this.setTint(toHex(Color.Red));
         }

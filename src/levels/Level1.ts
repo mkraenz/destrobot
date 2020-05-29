@@ -110,7 +110,7 @@ export const Level1 = {
             texture: "robot",
             dropFrequency: 10, // on average, one in dropFrequency kills will drop something
             health: 5,
-            speed: 125,
+            speed: 200,
             scale: 1,
             score: 10,
             attackRange: 200,
@@ -171,12 +171,20 @@ export const Level1 = {
             maxConcurrentEnemies: 4,
         },
         {
+            type: "Rangebot",
+            x: 250,
+            y: 1275,
+            enemiesPerWave: 2,
+            waveTimeout: 3000,
+            maxConcurrentEnemies: 4,
+        },
+        {
             type: "FastBot2k",
             x: 1250,
             y: 600,
             enemiesPerWave: 2,
-            waveTimeout: 3000,
-            maxConcurrentEnemies: 4,
+            waveTimeout: 10000,
+            maxConcurrentEnemies: 2,
         },
         {
             type: "Megabot",

@@ -69,6 +69,7 @@ export class Enemy extends Physics.Arcade.Sprite {
             .normalize()
             .scale(this.speed);
         this.setVelocity(direction.x, direction.y);
+        // TODO: consider using this.scene.physics.moveToObject(...)
     }
 
     public update() {

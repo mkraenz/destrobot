@@ -1,22 +1,26 @@
 import { Input, Math, Physics, Scene } from "phaser";
+import { IWeaponChangedEvent } from "../events/Events";
 import { EventType } from "../events/EventType";
 import { IPoint } from "../utils/IPoint";
 import { IWeapon } from "./IWeapon";
+import { IWeaponSpriteCfg, WeaponSprite } from "./weapons/WeaponSprite";
 
 const Vec = Math.Vector2;
 type Vec = Math.Vector2;
 
+// rename PlayerWeaponController
 export class PlayerShootingController {
     private pos: Vec;
     private dir: Vec;
     private enabled = true;
     private leftIsDown = false;
+    private weapon?: IWeapon;
+    private weaponSprite?: WeaponSprite;
 
     constructor(
         private scene: Scene,
         private player: Physics.Arcade.Sprite,
-        private playerOffset: IPoint,
-        private weapon?: IWeapon
+        private playerOffset: IPoint
     ) {
         this.pos = this.nextPos();
         this.dir = new Vec(1, 0);
@@ -37,7 +41,8 @@ export class PlayerShootingController {
         reloadKey.on("down", () => this.reload());
         this.scene.events.on(
             EventType.WeaponChanged,
-            (data: { weapon: IWeapon }) => this.setWeapon(data.weapon)
+            (data: IWeaponChangedEvent) =>
+                this.setWeapon(data.weapon, data.weaponData)
         );
     }
 
@@ -47,13 +52,28 @@ export class PlayerShootingController {
 
     public update() {
         this.pos = this.nextPos();
+        this.weaponSprite?.setPosition(this.player.x, this.player.y);
+        this.weaponSprite?.setVelocity(
+            this.player.body.velocity.x,
+            this.player.body.velocity.y
+        );
         if (this.leftIsDown) {
             this.shoot();
         }
     }
 
-    public setWeapon(weapon: IWeapon) {
+    private setWeapon(
+        weapon: IWeapon,
+        weaponSpriteData: Omit<IWeaponSpriteCfg, "x" | "y">
+    ) {
         this.weapon = weapon;
+        this.weaponSprite?.destroy();
+        const spriteCfg = {
+            ...weaponSpriteData,
+            x: this.player.x,
+            y: this.player.y,
+        };
+        this.weaponSprite = new WeaponSprite(this.scene, spriteCfg);
     }
 
     private shoot() {

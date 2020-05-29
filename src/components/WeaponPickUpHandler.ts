@@ -1,5 +1,5 @@
 import { Physics, Scene } from "phaser";
-import { IWeaponPickedUpEvent } from "../events/Events";
+import { IWeaponChangedEvent, IWeaponPickedUpEvent } from "../events/Events";
 import { EventType } from "../events/EventType";
 import { ILevel } from "../levels/ILevel";
 import { Weapon } from "./weapons/Weapon";
@@ -20,7 +20,11 @@ export class WeaponPickUpHandler {
                     );
                 }
                 const weapon = new Weapon(scene, bullets, weaponData);
-                scene.events.emit(EventType.WeaponChanged, { weapon });
+                const data: IWeaponChangedEvent = {
+                    weapon,
+                    weaponData,
+                };
+                scene.events.emit(EventType.WeaponChanged, data);
             }
         );
     }

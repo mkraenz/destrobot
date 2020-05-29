@@ -99,11 +99,13 @@ export class PlayerMovementController {
         const dodgeVel = this.player.body.velocity.scale(DODGE_SPEED_UP_FACTOR);
         this.player.setVelocity(dodgeVel.x, dodgeVel.y);
         this.playerVsDangerousThingColliders.forEach(c => (c.active = false));
+        this.player.setAlpha(0.3);
         const onDodgeFinish = () => {
             this.playerVsDangerousThingColliders.forEach(
                 c => (c.active = true)
             );
             this.isDodging = false;
+            this.player.clearAlpha();
             setTimeout(() => {
                 this.onDodgeCooldown = false;
             }, DODGE_COOLDOWN);
