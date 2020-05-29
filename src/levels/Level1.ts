@@ -1,6 +1,6 @@
 import { Color } from "../styles/Color";
 
-export const Level1 = {
+export const Level1 = Object.freeze({
     map: {
         key: "map",
         tilesetName: "scifi-tileset",
@@ -94,7 +94,7 @@ export const Level1 = {
     ],
     enemies: [
         {
-            name: "Robot",
+            name: "RoBot",
             damage: 1,
             texture: "robot",
             dropFrequency: 10, // on average, one in dropFrequency kills will drop something
@@ -105,7 +105,7 @@ export const Level1 = {
             attackRange: 0,
         },
         {
-            name: "Rangebot",
+            name: "RangeBot",
             damage: 1,
             texture: "robot",
             dropFrequency: 10, // on average, one in dropFrequency kills will drop something
@@ -130,7 +130,7 @@ export const Level1 = {
             attackRange: 0, // = max distance to attack the player
         },
         {
-            name: "Megabot",
+            name: "MegaBot",
             damage: 2,
             texture: "robot",
             dropFrequency: 2,
@@ -155,7 +155,7 @@ export const Level1 = {
     ],
     spawners: [
         {
-            type: "Robot",
+            type: "RoBot",
             x: 250,
             y: 1275,
             enemiesPerWave: 5,
@@ -163,7 +163,7 @@ export const Level1 = {
             maxConcurrentEnemies: 10,
         },
         {
-            type: "Rangebot",
+            type: "RangeBot",
             x: 1250,
             y: 600,
             enemiesPerWave: 2,
@@ -171,7 +171,7 @@ export const Level1 = {
             maxConcurrentEnemies: 4,
         },
         {
-            type: "Rangebot",
+            type: "RangeBot",
             x: 250,
             y: 1275,
             enemiesPerWave: 2,
@@ -187,7 +187,7 @@ export const Level1 = {
             maxConcurrentEnemies: 2,
         },
         {
-            type: "Megabot",
+            type: "MegaBot",
             x: 1370,
             y: 1300,
             enemiesPerWave: 1,
@@ -203,4 +203,28 @@ export const Level1 = {
             maxConcurrentEnemies: 1,
         },
     ],
-};
+    goals: {
+        killEnemies: [
+            {
+                type: "DestroBot",
+                amount: 1,
+            },
+            {
+                type: "MegaBot",
+                amount: 1,
+            },
+            {
+                type: "FastBot2k",
+                amount: 5,
+            },
+            {
+                type: "RangeBot",
+                amount: 3,
+            },
+            {
+                type: "RoBot",
+                amount: 3,
+            },
+        ],
+    },
+});

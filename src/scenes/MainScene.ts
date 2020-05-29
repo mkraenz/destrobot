@@ -10,7 +10,8 @@ import { PlayerLevelController } from "../components/PlayerLevelController";
 import { PlayerMovementController } from "../components/PlayerMovementController";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { ILevel } from "../levels/ILevel";
-import { HealthHud } from "./hud/HealthHud";
+import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
+import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
 import { WeaponHud } from "./hud/WeaponHud";
 
@@ -223,10 +224,13 @@ export class MainScene extends Scene {
     }
 
     private addHud() {
-        this.scene.add("HealthHud", HealthHud, true, {
+        const healthHudData: IHealthHudInitData = {
             player: this.player,
-        });
+        };
+        this.scene.add("HealthHud", HealthHud, true, healthHudData);
         this.scene.add("ScoreHud", ScoreHud, true);
         this.scene.add("MagazineHud", WeaponHud, true);
+        const goalsHudData: GoalsHudInitData = this.levelData.goals;
+        this.scene.add("GoalsHud", GoalsHud, true, goalsHudData);
     }
 }

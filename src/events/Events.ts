@@ -12,6 +12,7 @@ export interface IWeaponPickedUpEvent {
 }
 
 export interface IEnemyKilledEvent {
+    name: string;
     score: number;
 }
 

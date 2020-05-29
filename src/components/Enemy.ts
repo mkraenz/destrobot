@@ -88,7 +88,10 @@ export class Enemy extends Physics.Arcade.Sprite {
         if (this.isRandomDrop()) {
             this.scene.events.emit("drop-item", { x: this.x, y: this.y });
         }
-        const enemyKilledEventData: IEnemyKilledEvent = { score: this.score };
+        const enemyKilledEventData: IEnemyKilledEvent = {
+            score: this.score,
+            name: this.name,
+        };
         this.scene.events.emit(EventType.EnemyKilled, enemyKilledEventData);
         this.setActive(false);
         this.disableBody(true);
