@@ -68,7 +68,7 @@ export const Level1 = Object.freeze({
     player: {
         x: 250,
         y: 500,
-        health: 1,
+        health: 4,
         maxHealth: 4,
         hitInvicibilityTimeout: 800,
         hitFreezeTimeout: 100,

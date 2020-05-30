@@ -4,11 +4,15 @@ $black: #000;
 $metallic: #aaa9ad;
 $darkMetallic: #323334;
 $font: Android7;
+$green: #4caf50;
+
+$buttonWidth: 300px;
 
 body {
     background: $base;
 }
 
+// begin button
 .buttons {
     display: flex;
     flex-direction: row;
@@ -26,7 +30,7 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    width: 240px;
+    width: 270px;
 }
 
 .btn {
@@ -35,7 +39,7 @@ body {
     font-size: 14px;
     font-weight: 400;
     line-height: 45px;
-    max-width: 160px;
+    max-width: $buttonWidth;
     position: relative;
     text-decoration: none;
     text-transform: uppercase;
@@ -98,3 +102,41 @@ body {
     -webkit-transform: rotate(40deg);
     transform: rotate(40deg);
 }
+
+// end button
+
+// begin slider
+.slider {
+    -webkit-appearance: none; /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 25px; /* Specified height */
+    background: $metallic; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+    transition: opacity 0.2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: $green; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: $green; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+// end slider

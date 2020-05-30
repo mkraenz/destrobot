@@ -51,7 +51,7 @@ export class OptionsScene extends Scene {
 
         const resumeButton = Button("EXIT");
         this.add
-            .dom(halfWidth, halfHeight + 200)
+            .dom(halfWidth, halfHeight + 215)
             .createFromHTML(resumeButton)
             .addListener("click")
             .on("click", () => this.resumeGame());
