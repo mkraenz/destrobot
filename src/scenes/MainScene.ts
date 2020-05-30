@@ -5,11 +5,11 @@ import { Enemy } from "../components/Enemy";
 import { EnemySpawner } from "../components/EnemySpawner";
 import { IPowerUp } from "../components/IPowerUp";
 import { ItemDropper } from "../components/ItemDropper";
+import { playBackgroundMusic } from "../components/options/playBackgroundMusic";
 import { Player } from "../components/Player";
 import { PlayerLevelController } from "../components/PlayerLevelController";
 import { PlayerMovementController } from "../components/PlayerMovementController";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
-import { gOptions } from "../gOptions";
 import { ILevel } from "../levels/ILevel";
 import { TextConfig } from "../styles/Text";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
@@ -25,7 +25,6 @@ const CAMERA_SHAKE_DURATION = 50;
 const RESTART_TIMEOUT = 10000;
 
 const OPTIONS = "OptionsScene";
-const BGM = "fight_music";
 
 export class MainScene extends Scene {
     private levelData!: ILevel;
@@ -186,17 +185,7 @@ export class MainScene extends Scene {
             powerups,
             this.levelData.weapons
         );
-        this.sound.play(BGM, {
-            loop: true,
-            volume: gOptions.musicVolume, // not updating after changing in options due to sound being global
-        });
-        setTimeout(() => {
-            // nice shift effect
-            this.sound.play(BGM, {
-                loop: true,
-                volume: gOptions.musicVolume, // not updating after changing in options due to sound being global
-            });
-        }, 20);
+        playBackgroundMusic(this);
 
         // test pickUps
         itemDropper.spawnHeart({

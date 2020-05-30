@@ -1,5 +1,7 @@
 import { Input, Scene } from "phaser";
 import { FullscreenButton } from "../components/options/FullScreenButton";
+import { playBackgroundMusic } from "../components/options/playBackgroundMusic";
+import { SliderWithText } from "../components/options/SliderWithText";
 import { BackgroundImage } from "../components/title/BackgroundImage";
 import { gOptions } from "../gOptions";
 import { Color } from "../styles/Color";
@@ -25,41 +27,28 @@ export class OptionsScene extends Scene {
         title.setShadow(4, 4, Color.Black, 6, true, true);
         title.setAlpha(0.9);
 
-        // TODO extract slider with text
-        this.add
-            .text(
-                halfWidth - 10,
-                halfHeight + 100,
-                "Music Volume",
-                TextConfig.md
-            )
-            .setOrigin(1, 0.5);
-        this.add
-            .dom(halfWidth, halfHeight + 100)
-            .createFromHTML(Slider("music-volume"))
-            .setOrigin(0, 0.5)
-            .addListener("change")
-            .on("change", (event: React.ChangeEvent<HTMLInputElement>) => {
-                const musicVolume = Number(event.target.value) / 100.0;
-                gOptions.musicVolume = musicVolume;
-                this.sound.get("fight_music")?.destroy();
-                this.sound.play("fight_music", {
-                    volume: gOptions.musicVolume,
-                });
-            });
-        // end slider with text
-        this.add
-            .text(halfWidth - 10, halfHeight + 150, "Sfx Volume", TextConfig.md)
-            .setOrigin(1, 0.5);
-        this.add
-            .dom(halfWidth, halfHeight + 150)
-            .createFromHTML(Slider("sfx-volume"))
-            .setOrigin(0, 0.5)
-            .addListener("change")
-            .on("change", (event: React.ChangeEvent<HTMLInputElement>) => {
-                const sfxVolume = Number(event.target.value) / 100.0;
-                gOptions.sfxVolume = sfxVolume;
-            });
+        new SliderWithText(
+            this,
+            halfHeight + 100,
+            "Music Volume",
+            "music-volume"
+        ).on("change", (event: React.ChangeEvent<HTMLInputElement>) => {
+            const musicVolume = Number(event.target.value) / 100.0;
+            gOptions.musicVolume = musicVolume;
+            this.sound.stopAll();
+            playBackgroundMusic(this);
+        });
+        new SliderWithText(
+            this,
+            halfHeight + 150,
+            "Sfx Volume",
+            "sfx-volume"
+        ).on("change", (event: React.ChangeEvent<HTMLInputElement>) => {
+            const sfxVolume = Number(event.target.value) / 100.0;
+            gOptions.sfxVolume = sfxVolume;
+            this.sound.play("electric-buzz", { volume: gOptions.sfxVolume });
+        });
+
         const resumeButton = Button("EXIT");
         this.add
             .dom(halfWidth, halfHeight + 200)
@@ -92,6 +81,3 @@ const Button = (text: string) => `
     </div>
 </div>
 `;
-
-const Slider = (id: string) =>
-    `<input type="range" min="0" max="100" value="50" class="slider" id="${id}">`;
