@@ -11,6 +11,7 @@ import { PlayerMovementController } from "../components/PlayerMovementController
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { gOptions } from "../gOptions";
 import { ILevel } from "../levels/ILevel";
+import { TextConfig } from "../styles/Text";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
 import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
@@ -21,6 +22,7 @@ type Group = Physics.Arcade.Group;
 const FADE_IN_TIME = 0;
 const CAMERA_SHAKE_INTENSITY = 0.005;
 const CAMERA_SHAKE_DURATION = 50;
+const RESTART_TIMEOUT = 10000;
 
 const OPTIONS = "OptionsScene";
 const BGM = "fight_music";
@@ -130,6 +132,7 @@ export class MainScene extends Scene {
                         CAMERA_SHAKE_INTENSITY
                     );
                 }
+                this.enemyBullets.remove(b, true, true);
             }
         );
         const movementController = new PlayerMovementController(
@@ -187,6 +190,13 @@ export class MainScene extends Scene {
             loop: true,
             volume: gOptions.musicVolume, // not updating after changing in options due to sound being global
         });
+        setTimeout(() => {
+            // nice shift effect
+            this.sound.play(BGM, {
+                loop: true,
+                volume: gOptions.musicVolume, // not updating after changing in options due to sound being global
+            });
+        }, 20);
 
         // test pickUps
         itemDropper.spawnHeart({
@@ -204,6 +214,8 @@ export class MainScene extends Scene {
         });
 
         this.addKeyboardInput();
+
+        // this.events.once(EventType.PlayerDied, () => this.restart()); // not working yet
     }
 
     public update() {
@@ -277,5 +289,28 @@ export class MainScene extends Scene {
     private resume() {
         this.subScenes.forEach(scene => this.scene.wake(scene));
         this.paused = false;
+    }
+
+    private restart() {
+        this.add.text(
+            this.scale.width / 2,
+            this.scale.height / 2,
+            "Restart in 10 seconds",
+            TextConfig.lg
+        );
+        let restartIn = 10;
+        setInterval(() => {
+            restartIn--;
+            console.log(restartIn);
+        }, 1000);
+        setTimeout(() => {
+            this.sound.stopAll();
+            this.subScenes.forEach(scene => this.scene.remove(scene));
+            this.playerBullets.destroy(true);
+            this.enemies.destroy(true);
+            this.enemyBullets.destroy(true);
+            this.children.getAll().forEach(c => c.destroy());
+            this.scene.restart();
+        }, RESTART_TIMEOUT);
     }
 }

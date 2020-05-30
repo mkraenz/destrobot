@@ -1,0 +1,100 @@
+$base: #0f1923;
+$white: #fff;
+$black: #000;
+$metallic: #aaa9ad;
+$darkMetallic: #323334;
+$font: Android7;
+
+body {
+    background: $base;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.button-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 240px;
+}
+
+.btn {
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 45px;
+    max-width: 160px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 100%;
+}
+.btn:hover {
+    text-decoration: none;
+}
+
+/*btn_background*/
+.effect01 {
+    color: $white;
+    border: 4px solid $black;
+    box-shadow: 0px 0px 0px 1px $black inset;
+    background-color: $black;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+.effect01:hover {
+    border: 4px solid $darkMetallic;
+    background-color: $white;
+    box-shadow: none;
+}
+
+/*btn_text*/
+.effect01 span {
+    transition: all 0.2s ease-out;
+    z-index: 2;
+    font-family: $font;
+}
+.effect01:hover span {
+    letter-spacing: 0.13em;
+    color: $darkMetallic;
+    font-family: $font;
+    font-weight: bold;
+}
+
+/*highlight*/
+.effect01:after {
+    background: $white;
+    border: 0px solid $black;
+    content: "";
+    height: 155px;
+    left: -75px;
+    opacity: 0.8;
+    position: absolute;
+    top: -50px;
+    -webkit-transform: rotate(35deg);
+    transform: rotate(35deg);
+    width: 50px;
+    transition: all 0.8s cubic-bezier(0.075, 0.82, 0.165, 1); /*easeOutCirc*/
+    z-index: 1;
+}
+.effect01:hover:after {
+    background: $white;
+    border: 20px solid $black;
+    opacity: 0;
+    left: 120%;
+    -webkit-transform: rotate(40deg);
+    transform: rotate(40deg);
+}

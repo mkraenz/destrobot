@@ -71,7 +71,7 @@ export class LoadingScene extends Scene {
                 frameHeight: 64,
             })
             .tilemapTiledJSON("map", "./assets/maps/map.json")
-            .image("tiles", "./assets/images/tileset.png");
+            .image("tiles", imgPath("tileset.png"));
     }
 
     private makeLoadingBar() {

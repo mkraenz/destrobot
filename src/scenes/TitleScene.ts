@@ -1,5 +1,6 @@
 import { random } from "lodash";
 import { GameObjects, Scene } from "phaser";
+import { FullscreenButton } from "../components/options/FullScreenButton";
 import { BackgroundImage } from "../components/title/BackgroundImage";
 import { Level1 } from "../levels/Level1";
 import { Color } from "../styles/Color";
@@ -82,24 +83,7 @@ export class TitleScene extends Scene {
         });
         this.input.mouse.disableContextMenu();
 
-        this.addFullscreenButton();
-    }
-
-    private addFullscreenButton() {
-        const button = this.add
-            .image(this.scale.width - 16, 16, "fullscreen", 0)
-            .setOrigin(1, 0)
-            .setInteractive()
-            .setAlpha(0.6);
-        button.on("pointerup", () => {
-            if (this.scale.isFullscreen) {
-                button.setFrame(0);
-                this.scale.toggleFullscreen();
-            } else {
-                button.setFrame(1);
-                this.scale.toggleFullscreen();
-            }
-        });
+        new FullscreenButton(this);
     }
 
     private setBuzzTimeout() {

@@ -29,7 +29,9 @@ export class WeaponSprite extends Physics.Arcade.Sprite {
     }
 
     public destroy() {
-        this.scene.input.removeListener("pointermove", undefined, this);
+        if (this.scene) {
+            this.scene.input.removeListener("pointermove", undefined, this);
+        }
         super.destroy();
     }
 }

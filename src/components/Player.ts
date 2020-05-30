@@ -142,6 +142,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
         this.disableBody();
         this.play(DEAD);
         this.scene.sound.play("player-die", { volume: gOptions.sfxVolume });
+        this.scene.events.emit(EventType.PlayerDied);
     }
 
     private animate() {

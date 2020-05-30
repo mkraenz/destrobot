@@ -1,4 +1,5 @@
 import { Input, Scene } from "phaser";
+import { FullscreenButton } from "../components/options/FullScreenButton";
 import { BackgroundImage } from "../components/title/BackgroundImage";
 import { gOptions } from "../gOptions";
 import { Color } from "../styles/Color";
@@ -67,7 +68,7 @@ export class OptionsScene extends Scene {
             .on("click", () => this.resumeGame());
 
         this.addKeyboardInput();
-        this.addFullscreenButton();
+        new FullscreenButton(this);
     }
 
     private addKeyboardInput() {
@@ -78,31 +79,19 @@ export class OptionsScene extends Scene {
         pauseKey.on("down", () => this.resumeGame());
     }
 
-    private addFullscreenButton() {
-        const button = this.add
-            .image(this.scale.width - 16, 16, "fullscreen", 0)
-            .setOrigin(1, 0)
-            .setInteractive()
-            .setAlpha(0.5);
-        button.on("pointerup", () => {
-            if (this.scale.isFullscreen) {
-                button.setFrame(0);
-                this.scale.toggleFullscreen();
-            } else {
-                button.setFrame(1);
-                this.scale.toggleFullscreen();
-            }
-        });
-    }
-
     private resumeGame() {
         this.sound.stopByKey("title-ambient");
         this.scene.switch("MainScene");
     }
 }
 
-const Button = (text: string) =>
-    `<button type="button" style="font-family: Android7">${text}</button>`;
+const Button = (text: string) => `
+<div class="buttons">
+    <div class="button-container">
+        <a class="btn effect01"><span>${text}</span></a>
+    </div>
+</div>
+`;
 
 const Slider = (id: string) =>
     `<input type="range" min="0" max="100" value="50" class="slider" id="${id}">`;
