@@ -6,5 +6,6 @@ main();
 function main() {
     window.addEventListener("load", () => {
         new Game(gameConfig);
+        // RexUiDemoGame;
     });
 }

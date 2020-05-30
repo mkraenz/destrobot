@@ -2,9 +2,9 @@ const isProd = window.location.hostname !== "localhost";
 export const DEV = isProd
     ? {}
     : {
-          debug: true, // always true
-          playerInvicible: true,
-          skipTitle: false,
+          playerInvicible: false,
+          startInOptionsScene: false,
+          startInMainScene: false,
           startInWinScene: false,
           enableSceneWatcher: false,
       };

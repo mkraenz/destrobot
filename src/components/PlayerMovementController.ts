@@ -2,7 +2,7 @@ import { Input, Physics, Scene } from "phaser";
 import { IMovableActor } from "./IMovableActor";
 
 type Key = Input.Keyboard.Key;
-const DODGE_TIMEOUT = 300;
+const DODGE_TIMEOUT = 250;
 const DODGE_COOLDOWN = 1000;
 const DODGE_SPEED_UP_FACTOR = 2;
 

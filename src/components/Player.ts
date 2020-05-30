@@ -1,6 +1,7 @@
 import { Physics, Scene } from "phaser";
 import { DEV } from "../dev-config";
 import { EventType } from "../events/EventType";
+import { gOptions } from "../gOptions";
 import { Color, toHex } from "../styles/Color";
 import { IMovableActor } from "./IMovableActor";
 import { PlayerShootingController } from "./PlayerShootingController";
@@ -91,7 +92,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
         this.xWasHit = true;
         this.xInvincible = true;
         this.health -= damage;
-        this.scene.sound.play("player-hit", { volume: 2 });
+        this.scene.sound.play("player-hit", { volume: 2 * gOptions.sfxVolume });
         setTimeout(() => {
             this.xWasHit = false;
         }, this.hitFreezeTimeout);
@@ -140,7 +141,7 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
         this.shootingController.disable();
         this.disableBody();
         this.play(DEAD);
-        this.scene.sound.play("player-die");
+        this.scene.sound.play("player-die", { volume: gOptions.sfxVolume });
     }
 
     private animate() {

@@ -4,6 +4,7 @@ import { Level1 } from "../levels/Level1";
 import { Color, toHex } from "../styles/Color";
 import { setDefaultTextStyle } from "../styles/Text";
 import { MainScene } from "./MainScene";
+import { OptionsScene } from "./OptionsScene";
 import { TitleScene } from "./TitleScene";
 
 const FADEOUT_TIME = 0;
@@ -23,80 +24,6 @@ export class LoadingScene extends Scene {
         this.preloadAllAssets();
         this.addTitles();
         this.makeLoadingBar();
-    }
-
-    private makeLoadingBar() {
-        const loadingText = this.make.text({
-            x: this.halfWidth,
-            y: this.halfHeight - 50,
-            text: "Loading...",
-            style: {
-                font: "30px Metamorphous",
-                fill: Color.White,
-            },
-        });
-        loadingText.setOrigin(0.5);
-
-        const progressBar = this.add.graphics();
-        const progressBox = this.add.graphics();
-        progressBox.fillStyle(toHex(Color.DarkGrey), 0.8);
-        progressBox.fillRect(
-            this.halfWidth - 320 / 2,
-            this.halfHeight,
-            320,
-            50
-        );
-
-        const assetText = this.make.text({
-            x: this.halfWidth,
-            y: this.halfHeight + 65,
-            text: "",
-            style: {
-                font: "18px Metamorphous",
-                fill: Color.White,
-            },
-        });
-        assetText.setOrigin(0.5);
-
-        this.load.on("progress", this.getProgressBarFiller(progressBar));
-        this.load.on("fileprogress", this.getAssetTextWriter(assetText));
-        this.load.on("complete", () => {
-            this.cameras.main.once("camerafadeoutcomplete", (camera: any) => {
-                if (DEV.startInWinScene) {
-                    // this.scene.add("WinScene", WinScene, true);
-                    throw new Error("No win screen defined yet");
-                } else if (DEV.skipTitle) {
-                    this.scene.add("MainScene", MainScene, true, Level1);
-                } else {
-                    this.scene.add("TitleScene", TitleScene, true);
-                }
-                this.scene.remove(this);
-            });
-            this.cameras.main.fadeOut(FADEOUT_TIME);
-        });
-    }
-
-    private getAssetTextWriter(
-        assetText: GameObjects.Text
-    ): (file: { key: string }) => void {
-        return (file: { key: string }) => {
-            assetText.setText(`Loading asset: ${file.key}`);
-        };
-    }
-
-    private getProgressBarFiller(
-        progressBar: GameObjects.Graphics
-    ): (count: number) => void {
-        return (count: number) => {
-            progressBar.clear();
-            progressBar.fillStyle(toHex(Color.White));
-            progressBar.fillRect(
-                this.halfWidth + 10 - 320 / 2,
-                this.halfHeight + 10,
-                300 * count,
-                30
-            );
-        };
     }
 
     private preloadAllAssets() {
@@ -139,8 +66,89 @@ export class LoadingScene extends Scene {
                 frameWidth: 28,
                 frameHeight: 32,
             })
+            .spritesheet("fullscreen", imgPath("fullscreen.png"), {
+                frameWidth: 64,
+                frameHeight: 64,
+            })
             .tilemapTiledJSON("map", "./assets/maps/map.json")
             .image("tiles", "./assets/images/tileset.png");
+    }
+
+    private makeLoadingBar() {
+        const loadingText = this.make.text({
+            x: this.halfWidth,
+            y: this.halfHeight - 50,
+            text: "Loading...",
+            style: {
+                font: "30px Metamorphous",
+                fill: Color.White,
+            },
+        });
+        loadingText.setOrigin(0.5);
+
+        const progressBar = this.add.graphics();
+        const progressBox = this.add.graphics();
+        progressBox.fillStyle(toHex(Color.DarkGrey), 0.8);
+        progressBox.fillRect(
+            this.halfWidth - 320 / 2,
+            this.halfHeight,
+            320,
+            50
+        );
+
+        const assetText = this.make.text({
+            x: this.halfWidth,
+            y: this.halfHeight + 65,
+            text: "",
+            style: {
+                font: "18px Metamorphous",
+                fill: Color.White,
+            },
+        });
+        assetText.setOrigin(0.5);
+
+        this.load.on("progress", this.getProgressBarFiller(progressBar));
+        this.load.on("fileprogress", this.getAssetTextWriter(assetText));
+        this.load.on("complete", () => {
+            this.cameras.main.once("camerafadeoutcomplete", () =>
+                this.nextScene()
+            );
+            this.cameras.main.fadeOut(FADEOUT_TIME);
+        });
+    }
+
+    private nextScene() {
+        if (DEV.startInOptionsScene) {
+            this.scene.add("OptionsScene", OptionsScene, true);
+        } else if (DEV.startInMainScene) {
+            this.scene.add("MainScene", MainScene, true, Level1);
+        } else {
+            this.scene.add("TitleScene", TitleScene, true);
+        }
+        this.scene.remove(this);
+    }
+
+    private getAssetTextWriter(
+        assetText: GameObjects.Text
+    ): (file: { key: string }) => void {
+        return (file: { key: string }) => {
+            assetText.setText(`Loading asset: ${file.key}`);
+        };
+    }
+
+    private getProgressBarFiller(
+        progressBar: GameObjects.Graphics
+    ): (count: number) => void {
+        return (count: number) => {
+            progressBar.clear();
+            progressBar.fillStyle(toHex(Color.White));
+            progressBar.fillRect(
+                this.halfWidth + 10 - 320 / 2,
+                this.halfHeight + 10,
+                300 * count,
+                30
+            );
+        };
     }
 
     private addTitles() {

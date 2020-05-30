@@ -1,5 +1,6 @@
 import { random } from "lodash";
 import { GameObjects, Physics, Scene } from "phaser";
+import { gOptions } from "../gOptions";
 import { IPoint } from "../utils/IPoint";
 import { Enemy, IEnemyConfig } from "./Enemy";
 import { IWeaponConfig, Weapon } from "./weapons/Weapon";
@@ -32,7 +33,9 @@ export class EnemySpawner {
         const diffToMax = this.maxConcurrentEnemies - this.countActive();
         const newEnemyCount = Math.min(n, diffToMax);
         if (newEnemyCount > 0) {
-            this.scene.sound.play("electric-buzz");
+            this.scene.sound.play("electric-buzz", {
+                volume: gOptions.sfxVolume,
+            });
         }
         return Array(newEnemyCount)
             .fill(0)

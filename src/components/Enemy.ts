@@ -2,6 +2,7 @@ import { random } from "lodash";
 import { GameObjects, Math, Physics, Scene } from "phaser";
 import { IEnemyKilledEvent } from "../events/Events";
 import { EventType } from "../events/EventType";
+import { gOptions } from "../gOptions";
 import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
 import { IWeapon } from "./IWeapon";
@@ -96,13 +97,13 @@ export class Enemy extends Physics.Arcade.Sprite {
         this.setActive(false);
         this.disableBody(true);
         this.setVisible(false);
-        this.scene.sound.play("enemy-die", { volume: 5 });
+        this.scene.sound.play("enemy-die", { volume: 5 * gOptions.sfxVolume });
     }
 
     public takeDamage(damage: number) {
         this.health -= damage;
         this.setTint(toHex(Color.Red));
-        this.scene.sound.play("enemy-hit");
+        this.scene.sound.play("enemy-hit", { volume: gOptions.sfxVolume });
         setTimeout(() => {
             this.clearTint();
             this.maybeApplyBaseTint();

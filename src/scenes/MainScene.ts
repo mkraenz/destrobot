@@ -1,5 +1,5 @@
 import { assign } from "lodash";
-import { Physics, Scene } from "phaser";
+import { Input, Physics, Scene } from "phaser";
 import { Bullet } from "../components/Bullet";
 import { Enemy } from "../components/Enemy";
 import { EnemySpawner } from "../components/EnemySpawner";
@@ -9,6 +9,7 @@ import { Player } from "../components/Player";
 import { PlayerLevelController } from "../components/PlayerLevelController";
 import { PlayerMovementController } from "../components/PlayerMovementController";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
+import { gOptions } from "../gOptions";
 import { ILevel } from "../levels/ILevel";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
 import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
@@ -21,12 +22,17 @@ const FADE_IN_TIME = 0;
 const CAMERA_SHAKE_INTENSITY = 0.005;
 const CAMERA_SHAKE_DURATION = 50;
 
+const OPTIONS = "OptionsScene";
+const BGM = "fight_music";
+
 export class MainScene extends Scene {
     private levelData!: ILevel;
     private player!: Player;
     private enemies!: Group;
     private playerBullets!: Group;
     private enemyBullets!: Group;
+    private subScenes: string[] = [];
+    private paused = false;
 
     constructor() {
         super({ key: "MainScene" });
@@ -177,7 +183,10 @@ export class MainScene extends Scene {
             powerups,
             this.levelData.weapons
         );
-        this.sound.play("fight_music", { loop: true, volume: 0.1 });
+        this.sound.play(BGM, {
+            loop: true,
+            volume: gOptions.musicVolume, // not updating after changing in options due to sound being global
+        });
 
         // test pickUps
         itemDropper.spawnHeart({
@@ -193,15 +202,31 @@ export class MainScene extends Scene {
                 pickUpScale: weapon.pickUpScale,
             });
         });
+
+        this.addKeyboardInput();
     }
 
     public update() {
+        if (this.paused) {
+            this.resume();
+        }
         this.player.update();
         const enemies = this.enemies.getChildren();
         enemies.forEach(x => x.update());
         const inactiveEnemies = enemies.filter(e => !e.active);
         inactiveEnemies.forEach(e => {
             this.enemies.remove(e, true, true);
+        });
+    }
+
+    private addKeyboardInput() {
+        const KeyCodes = Input.Keyboard.KeyCodes;
+        const addKey = (key: number | string) =>
+            this.input.keyboard.addKey(key);
+        const pauseKey = addKey(KeyCodes.P);
+        pauseKey.on("down", () => {
+            // todo after switching back from optionsscene, the first keystroke of P does not trigger the cb
+            this.pause();
         });
     }
 
@@ -227,10 +252,30 @@ export class MainScene extends Scene {
         const healthHudData: IHealthHudInitData = {
             player: this.player,
         };
-        this.scene.add("HealthHud", HealthHud, true, healthHudData);
-        this.scene.add("ScoreHud", ScoreHud, true);
-        this.scene.add("MagazineHud", WeaponHud, true);
+        this.addSubScene("HealthHud", HealthHud, healthHudData);
+        this.addSubScene("ScoreHud", ScoreHud);
+        this.addSubScene("MagazineHud", WeaponHud);
         const goalsHudData: GoalsHudInitData = this.levelData.goals;
-        this.scene.add("GoalsHud", GoalsHud, true, goalsHudData);
+        this.addSubScene("GoalsHud", GoalsHud, goalsHudData);
+    }
+
+    private addSubScene<T extends {}>(
+        key: string,
+        scene: new () => Scene,
+        initData?: T
+    ) {
+        this.scene.add(key, scene, true, initData);
+        this.subScenes.push(key);
+    }
+
+    private pause() {
+        this.subScenes.forEach(scene => this.scene.sleep(scene));
+        this.paused = true;
+        this.scene.switch(OPTIONS);
+    }
+
+    private resume() {
+        this.subScenes.forEach(scene => this.scene.wake(scene));
+        this.paused = false;
     }
 }

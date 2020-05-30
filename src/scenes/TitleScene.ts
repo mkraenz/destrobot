@@ -5,6 +5,7 @@ import { Level1 } from "../levels/Level1";
 import { Color } from "../styles/Color";
 import { TextConfig } from "../styles/Text";
 import { MainScene } from "./MainScene";
+import { OptionsScene } from "./OptionsScene";
 
 const START = "Click to start";
 const VERSION = "v0.1.0";
@@ -16,7 +17,8 @@ const CONTROLS = `WASD > move
 Space > dodge
 Left mouse button > fire
 Right mouse button > reload
-Mouse movement > aim`;
+Mouse movement > aim
+P > pause`;
 
 export class TitleScene extends Scene {
     private electricBuzzTimer?: number;
@@ -34,12 +36,12 @@ export class TitleScene extends Scene {
     private addHud() {
         this.sound.play("typing");
         this.sound.play("title-ambient", { loop: true });
-        new BackgroundImage(this, "title-background");
+        const background = new BackgroundImage(this, "title-background");
         const title = this.add
             .text(this.scale.width / 2, 210, TITLE, TextConfig.title)
-            .setOrigin(0.5);
-        title.setShadow(4, 4, Color.Black, 6, true, true);
-        title.setAlpha(0.9);
+            .setOrigin(0.5)
+            .setShadow(4, 4, Color.Black, 6, true, true)
+            .setAlpha(0.9);
         typeWriter(TITLE, title, () =>
             this.events.emit("typewriting-finished")
         );
@@ -47,7 +49,9 @@ export class TitleScene extends Scene {
             this.sound.play("electric-buzz");
             this.add
                 .text(this.scale.width / 2, 290, AUTHOR, TextConfig.version)
-                .setOrigin(0.5);
+                .setOrigin(0.5)
+                .setShadow(2, 2, Color.Black, 6, true, true)
+                .setAlpha(0.9);
             this.add.text(10, this.scale.height - 20, VERSION).setAlpha(0.6);
 
             const bannerStartHeight = this.scale.height / 2 + 130;
@@ -58,7 +62,9 @@ export class TitleScene extends Scene {
                     START,
                     TextConfig.lg
                 )
-                .setOrigin(0.5);
+                .setOrigin(0.5)
+                .setShadow(2, 2, Color.Black, 6, true, true)
+                .setAlpha(0.9);
             this.add
                 .text(
                     this.scale.width / 2,
@@ -69,12 +75,31 @@ export class TitleScene extends Scene {
                 .setOrigin(0.5)
                 .setAlpha(0.6);
 
-            this.input.once("pointerup", () =>
+            background.once("pointerup", () =>
                 this.goto("MainScene", MainScene, Level1)
             );
             this.setBuzzTimeout();
         });
         this.input.mouse.disableContextMenu();
+
+        this.addFullscreenButton();
+    }
+
+    private addFullscreenButton() {
+        const button = this.add
+            .image(this.scale.width - 16, 16, "fullscreen", 0)
+            .setOrigin(1, 0)
+            .setInteractive()
+            .setAlpha(0.6);
+        button.on("pointerup", () => {
+            if (this.scale.isFullscreen) {
+                button.setFrame(0);
+                this.scale.toggleFullscreen();
+            } else {
+                button.setFrame(1);
+                this.scale.toggleFullscreen();
+            }
+        });
     }
 
     private setBuzzTimeout() {
@@ -92,6 +117,7 @@ export class TitleScene extends Scene {
         this.cameras.main.once("camerafadeoutcomplete", () => {
             window.clearTimeout(this.electricBuzzTimer);
             this.sound.stopByKey("title-ambient");
+            this.scene.add("OptionsScene", OptionsScene, false);
             this.scene.add(key, sceneClass, true, initData);
             this.scene.remove(this);
         });

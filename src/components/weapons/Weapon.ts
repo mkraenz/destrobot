@@ -1,5 +1,6 @@
 import { Physics, Scene } from "phaser";
 import { EventType } from "../../events/EventType";
+import { gOptions } from "../../gOptions";
 import { Bullet } from "../Bullet";
 import { IWeapon } from "../IWeapon";
 
@@ -74,7 +75,7 @@ export class Weapon implements IWeapon {
         this.reloading = true;
         // explicitely use window for typescript type
         const reloadSoundTimer = window.setTimeout(
-            () => this.playSoundAsPlayer("weapon-loaded"),
+            () => this.playSfxSoundIfPlayer("weapon-loaded"),
             this.reloadTime - RELOAD_SOUND_LENGTH
         );
         const reloadTimer = window.setTimeout(
@@ -89,11 +90,11 @@ export class Weapon implements IWeapon {
             return;
         }
         if (this.bulletsLeftInMagazine <= 0) {
-            this.playSoundAsPlayer("empty-magazine");
+            this.playSfxSoundIfPlayer("empty-magazine");
             this.setCooldown();
             return;
         }
-        this.playSoundAsPlayer(this.fireSoundKey, {
+        this.playSfxSoundIfPlayer(this.fireSoundKey, {
             volume: 0.8,
         });
         const bullet = new Bullet(this.scene, {
@@ -114,7 +115,7 @@ export class Weapon implements IWeapon {
         this.setCooldown();
         if (this.bulletsLeftInMagazine === 0) {
             setTimeout(
-                () => this.playSoundAsPlayer("weapon-last-bullet-shot"),
+                () => this.playSfxSoundIfPlayer("weapon-last-bullet-shot"),
                 WEAPON_EMPTY_SOUND_TIMEOUT
             );
         }
@@ -130,19 +131,18 @@ export class Weapon implements IWeapon {
         this.reloadTimers = [];
         if (playReload) {
             // used for ammo pickup
-            this.playSoundAsPlayer("weapon-loaded");
+            this.playSfxSoundIfPlayer("weapon-loaded");
         }
     }
 
-    private playSoundAsPlayer(
+    private playSfxSoundIfPlayer(
         key: string,
-        extra?:
-            | Phaser.Types.Sound.SoundConfig
-            | Phaser.Types.Sound.SoundMarker
-            | undefined
+        extra: Phaser.Types.Sound.SoundConfig = {}
     ) {
         if (!this.isEnemyWeapon) {
-            this.scene.sound.play(key, extra);
+            const baseVol = extra.volume || 1;
+            const volume = baseVol * gOptions.sfxVolume;
+            this.scene.sound.play(key, { ...extra, volume });
         }
     }
 

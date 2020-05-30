@@ -11,12 +11,14 @@ export class ScoreHud extends Scene {
     }
 
     public create() {
-        const scoreText = this.add.text(
-            800,
-            34,
-            `Score: ${this.score}`,
-            TextConfig.xl
-        );
+        const scoreText = this.add
+            .text(
+                this.scale.width / 2,
+                34,
+                `Score: ${this.score}`,
+                TextConfig.xl
+            )
+            .setOrigin(0.5);
         const mainScene = this.scene.get("MainScene");
         mainScene.events.on(
             EventType.EnemyKilled,
