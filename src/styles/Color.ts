@@ -6,6 +6,8 @@ export enum Color {
     Green = "#0db80b",
     Peach = "#ffe5b4",
     Brown = "#965C29",
+    Metallic = "#aaa9ad",
+    DarkMetallic = "#323334",
 }
 
 const to0x = (color: Color | string) => color.replace("#", "0x");
