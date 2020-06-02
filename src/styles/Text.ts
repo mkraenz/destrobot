@@ -3,33 +3,40 @@ import { Color } from "./Color";
 
 type Style = Partial<GameObjects.TextStyle>;
 
+const DEFAULT_FONT = "Android7";
+
 export const TextConfig: { [key: string]: Style } = {
     title: {
-        fontFamily: "Android7",
+        fontFamily: DEFAULT_FONT,
         fontSize: "118px",
         color: Color.White,
     },
     version: {
-        fontFamily: "Android7",
+        fontFamily: DEFAULT_FONT,
+        color: Color.White,
+    },
+    xxl: {
+        fontFamily: DEFAULT_FONT,
+        fontSize: "64px",
         color: Color.White,
     },
     xl: {
-        fontFamily: "Android7",
+        fontFamily: DEFAULT_FONT,
         fontSize: "32px",
         color: Color.White,
     },
     lg: {
-        fontFamily: "Android7",
+        fontFamily: DEFAULT_FONT,
         fontSize: "20px",
         color: Color.White,
     },
     md: {
-        fontFamily: "Android7",
+        fontFamily: DEFAULT_FONT,
         fontSize: "16px",
         color: Color.White,
     },
     sm: {
-        fontFamily: "Android7",
+        fontFamily: DEFAULT_FONT,
         fontSize: "12px",
         color: Color.White,
     },

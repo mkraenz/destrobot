@@ -11,6 +11,7 @@ type Group = Physics.Arcade.Group;
 
 export class EnemySpawner {
     private spawnedEnemies: Enemy[] = [];
+    private spawnTimers: number[] = [];
 
     constructor(
         private scene: Scene,
@@ -63,11 +64,16 @@ export class EnemySpawner {
     }
 
     public spawnInterval(entitiesPerWave: number, timeout: number) {
-        setInterval(() => {
+        const timer = window.setInterval(() => {
             const entities = this.spawn(entitiesPerWave);
             this.spawnedEnemies.push(...entities);
             this.enemies.addMultiple(entities, true);
         }, timeout);
+        this.spawnTimers.push(timer);
+    }
+
+    public stop() {
+        this.spawnTimers.forEach(timer => clearTimeout(timer));
     }
 
     private countActive() {

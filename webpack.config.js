@@ -12,6 +12,7 @@ module.exports = {
         path: path.resolve(__dirname, "build"),
         filename: "bundle.js",
     },
+    devtool: "source-map",
     module: {
         rules: [
             { test: /\.ts$/, loader: "ts-loader", exclude: "/node_modules/" },

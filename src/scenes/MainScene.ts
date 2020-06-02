@@ -10,8 +10,9 @@ import { Player } from "../components/Player";
 import { PlayerLevelController } from "../components/PlayerLevelController";
 import { PlayerMovementController } from "../components/PlayerMovementController";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
+import { EventType } from "../events/EventType";
 import { ILevel } from "../levels/ILevel";
-import { TextConfig } from "../styles/Text";
+import { GameOverScene } from "./hud/GameOverScene";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
 import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
@@ -22,7 +23,6 @@ type Group = Physics.Arcade.Group;
 const FADE_IN_TIME = 0;
 const CAMERA_SHAKE_INTENSITY = 0.005;
 const CAMERA_SHAKE_DURATION = 50;
-const RESTART_TIMEOUT = 10000;
 
 const OPTIONS = "OptionsScene";
 
@@ -34,6 +34,7 @@ export class MainScene extends Scene {
     private enemyBullets!: Group;
     private subScenes: string[] = [];
     private paused = false;
+    private enemySpawners: EnemySpawner[] = [];
 
     constructor() {
         super({ key: "MainScene" });
@@ -102,6 +103,7 @@ export class MainScene extends Scene {
                 rest.maxConcurrentEnemies,
                 this.enemyBullets
             );
+            this.enemySpawners.push(spawner);
             spawner.spawnInterval(rest.enemiesPerWave, rest.waveTimeout);
         });
 
@@ -204,7 +206,7 @@ export class MainScene extends Scene {
 
         this.addKeyboardInput();
 
-        // this.events.once(EventType.PlayerDied, () => this.restart()); // not working yet
+        this.events.once(EventType.PlayerDied, () => this.gameOver());
     }
 
     public update() {
@@ -218,6 +220,18 @@ export class MainScene extends Scene {
         inactiveEnemies.forEach(e => {
             this.enemies.remove(e, true, true);
         });
+    }
+
+    public restart() {
+        this.sound.stopAll();
+        this.subScenes.forEach(key => this.scene.remove(key));
+        this.playerBullets.destroy(true);
+        this.enemies.destroy(true);
+        this.enemyBullets.destroy(true);
+        this.enemySpawners.forEach(s => s.stop());
+        this.children.getAll().forEach(c => c.destroy());
+        Object.values(EventType).forEach(event => this.events.off(event));
+        this.scene.restart();
     }
 
     private addKeyboardInput() {
@@ -255,7 +269,7 @@ export class MainScene extends Scene {
         };
         this.addSubScene("HealthHud", HealthHud, healthHudData);
         this.addSubScene("ScoreHud", ScoreHud);
-        this.addSubScene("MagazineHud", WeaponHud);
+        this.addSubScene("WeaponHud", WeaponHud);
         const goalsHudData: GoalsHudInitData = this.levelData.goals;
         this.addSubScene("GoalsHud", GoalsHud, goalsHudData);
     }
@@ -280,26 +294,7 @@ export class MainScene extends Scene {
         this.paused = false;
     }
 
-    private restart() {
-        this.add.text(
-            this.scale.width / 2,
-            this.scale.height / 2,
-            "Restart in 10 seconds",
-            TextConfig.lg
-        );
-        let restartIn = 10;
-        setInterval(() => {
-            restartIn--;
-            console.log(restartIn);
-        }, 1000);
-        setTimeout(() => {
-            this.sound.stopAll();
-            this.subScenes.forEach(scene => this.scene.remove(scene));
-            this.playerBullets.destroy(true);
-            this.enemies.destroy(true);
-            this.enemyBullets.destroy(true);
-            this.children.getAll().forEach(c => c.destroy());
-            this.scene.restart();
-        }, RESTART_TIMEOUT);
+    private gameOver() {
+        this.scene.add("GameOverScene", GameOverScene, true);
     }
 }

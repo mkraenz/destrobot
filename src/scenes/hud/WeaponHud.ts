@@ -14,7 +14,7 @@ export class WeaponHud extends Scene {
     private bulletsLeft: number = 0;
     private weaponImage?: GameObjects.Image;
 
-    constructor(key = "MagazineHud") {
+    constructor(key = "WeaponHud") {
         super({ key });
     }
 

@@ -163,6 +163,14 @@ export const Level1 = Object.freeze({
             maxConcurrentEnemies: 10,
         },
         {
+            type: "RoBot",
+            x: 250,
+            y: 305,
+            enemiesPerWave: 1,
+            waveTimeout: 100,
+            maxConcurrentEnemies: 1,
+        },
+        {
             type: "RangeBot",
             x: 1250,
             y: 600,
