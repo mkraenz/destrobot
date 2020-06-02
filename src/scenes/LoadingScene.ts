@@ -39,6 +39,7 @@ export class LoadingScene extends Scene {
             .image("pistol", imgPath("pistol.png"))
             .image("sniper-rifle", imgPath("sniper-rifle.png"))
             .image("title-background", imgPath("metal-plaque.jpg"))
+            .image("skull", imgPath("skull.png"))
             .audio("typing", audioPath("teletype.mp3"))
             .audio("title-ambient", audioPath("sci-fi-sfx-loop-ambient-01.mp3"))
             .audio("electric-buzz", audioPath("electric-buzz.mp3"))

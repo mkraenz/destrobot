@@ -1,6 +1,6 @@
 import { Color } from "../styles/Color";
 
-export const Level1 = Object.freeze({
+export const Level1 = {
     map: {
         key: "map",
         tilesetName: "scifi-tileset",
@@ -235,4 +235,4 @@ export const Level1 = Object.freeze({
             },
         ],
     },
-});
+};

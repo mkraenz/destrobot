@@ -41,7 +41,7 @@ export class MainScene extends Scene {
     }
 
     public init(level: ILevel) {
-        this.levelData = level;
+        this.levelData = Object.freeze(level);
     }
 
     public create(): void {

@@ -2,6 +2,7 @@ import { random } from "lodash";
 import { GameObjects, Scene } from "phaser";
 import { FullscreenButton } from "../components/options/FullScreenButton";
 import { BackgroundImage } from "../components/title/BackgroundImage";
+import { ILevel } from "../levels/ILevel";
 import { Level1 } from "../levels/Level1";
 import { Color } from "../styles/Color";
 import { TextConfig } from "../styles/Text";
@@ -76,6 +77,17 @@ export class TitleScene extends Scene {
                 .setOrigin(0.5)
                 .setAlpha(0.6);
 
+            this.add
+                .image(this.scale.width / 2 + 200, bannerStartHeight, "skull")
+                .setInteractive({ useHandCursor: true })
+                .once("pointerup", () => {
+                    const lvl: ILevel = {
+                        ...Level1,
+                        player: { ...Level1.player, health: 1, maxHealth: 1 },
+                    };
+                    this.goto("MainScene", MainScene, lvl);
+                });
+
             // this.add.particles(
             //     "shapes",
             //     new Function(
@@ -87,10 +99,9 @@ export class TitleScene extends Scene {
                 this.goto("MainScene", MainScene, Level1)
             );
             this.setBuzzTimeout();
+            new FullscreenButton(this);
         });
         this.input.mouse.disableContextMenu();
-
-        new FullscreenButton(this);
     }
 
     private setBuzzTimeout() {
