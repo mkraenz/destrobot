@@ -76,6 +76,13 @@ export class TitleScene extends Scene {
                 .setOrigin(0.5)
                 .setAlpha(0.6);
 
+            // this.add.particles(
+            //     "shapes",
+            //     new Function(
+            //         `return ${this.cache.text.get("sparkle-particle-effect")}`
+            //     )()
+            // );
+
             background.once("pointerup", () =>
                 this.goto("MainScene", MainScene, Level1)
             );

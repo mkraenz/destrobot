@@ -1,0 +1,46 @@
+[
+    {
+        "active": true,
+        "visible": true,
+        "collideBottom": false,
+        "collideLeft": false,
+        "collideRight": false,
+        "collideTop": false,
+        "on": true,
+        "particleBringToTop": true,
+        "radial": true,
+        "frame": {
+            "frames": ["spark_01", "spark_02", "spark_03", "spark_06"],
+            "cycle": false,
+            "quantity": 1
+        },
+        "frequency": 1,
+        "gravityX": 0,
+        "gravityY": 3000,
+        "maxParticles": -1,
+        "timeScale": 0.3,
+        "blendMode": 1,
+        "accelerationX": { "ease": "Linear", "min": -1000, "max": 1000 },
+        "accelerationY": { "start": 0, "end": 0, "ease": "Stepped" },
+        "alpha": 1,
+        "angle": { "min": 0, "max": 360, "ease": "Linear" },
+        "bounce": 0,
+        "delay": 0,
+        "lifespan": { "ease": "Expo.easeIn", "min": 300, "max": 1000 },
+        "maxVelocityX": 10000,
+        "maxVelocityY": 500,
+        "moveToX": 0,
+        "moveToY": 0,
+        "quantity": { "ease": "Elastic.easeIn", "min": 20, "max": 30 },
+        "rotate": 0,
+        "scale": { "start": 0.5, "end": 0, "ease": "Back.easeOut" },
+        "speed": 1000,
+        "x": 1074,
+        "y": 274,
+        "tint": [13696768, 8255999, 13696768, 13696768],
+        "emitZone": {
+            "source": new Phaser.Geom.Rectangle(0, 0, 50, 50),
+            "type": "random"
+        }
+    }
+]

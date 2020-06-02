@@ -29,6 +29,8 @@ export class LoadingScene extends Scene {
     private preloadAllAssets() {
         const imgPath = (filename: string) => `./assets/images/${filename}`;
         const audioPath = (filename: string) => `./assets/sounds/${filename}`;
+        const particlePath = (filename: string) =>
+            `./assets/particles/${filename}`;
         this.load
             .image("ammo", imgPath("ammo.png"))
             .image("bullet", imgPath("bullet.png"))
@@ -71,7 +73,16 @@ export class LoadingScene extends Scene {
                 frameHeight: 64,
             })
             .tilemapTiledJSON("map", "./assets/maps/map.json")
-            .image("tiles", imgPath("tileset.png"));
+            .image("tiles", imgPath("tileset.png"))
+            .atlas(
+                "shapes",
+                particlePath("shapes.png"),
+                particlePath("shapes.json")
+            )
+            .text(
+                "sparkle-particle-effect",
+                particlePath("sparkle-particle-effect.json")
+            );
     }
 
     private makeLoadingBar() {
