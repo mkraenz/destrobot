@@ -1,6 +1,9 @@
 import { Color } from "../styles/Color";
 
 export const Level1 = {
+    mode: {
+        dark: false,
+    },
     map: {
         key: "map",
         tilesetName: "scifi-tileset",
@@ -64,6 +67,20 @@ export const Level1 = {
             reloadTime: 1000,
             fireSoundKey: "sniper-rifle-shot",
         },
+        {
+            name: "Uzi",
+            damage: 1,
+            bulletSpeed: 600,
+            ttl: 200,
+            cooldown: 50,
+            texture: "uzi",
+            scale: 1,
+            pickUpScale: 0.25,
+            bulletTexture: "bullet",
+            magazine: 50,
+            reloadTime: 2000,
+            fireSoundKey: "sniper-rifle-shot",
+        },
     ],
     player: {
         x: 250,
@@ -97,7 +114,7 @@ export const Level1 = {
             name: "RoBot",
             damage: 1,
             texture: "robot",
-            dropFrequency: 10, // on average, one in dropFrequency kills will drop something
+            dropFrequency: 5, // on average, one in dropFrequency kills will drop something
             health: 5,
             speed: 125,
             scale: 1,
@@ -108,7 +125,7 @@ export const Level1 = {
             name: "RangeBot",
             damage: 1,
             texture: "robot",
-            dropFrequency: 10, // on average, one in dropFrequency kills will drop something
+            dropFrequency: 3, // on average, one in dropFrequency kills will drop something
             health: 5,
             speed: 200,
             scale: 1,
@@ -121,7 +138,7 @@ export const Level1 = {
             name: "FastBot2k",
             damage: 1,
             texture: "robot",
-            dropFrequency: 10, // on average, one in dropFrequency kills will drop something
+            dropFrequency: 5, // on average, one in dropFrequency kills will drop something
             health: 1,
             speed: 220,
             scale: 1,

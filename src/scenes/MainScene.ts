@@ -1,5 +1,5 @@
 import { assign } from "lodash";
-import { Input, Physics, Scene } from "phaser";
+import { GameObjects, Input, Physics, Scene } from "phaser";
 import { Bullet } from "../components/Bullet";
 import { Enemy } from "../components/Enemy";
 import { EnemySpawner } from "../components/EnemySpawner";
@@ -12,6 +12,7 @@ import { PlayerMovementController } from "../components/PlayerMovementController
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { EventType } from "../events/EventType";
 import { ILevel } from "../levels/ILevel";
+import { Color, toHex } from "../styles/Color";
 import { GameOverScene } from "./hud/GameOverScene";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
 import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
@@ -35,6 +36,7 @@ export class MainScene extends Scene {
     private subScenes: string[] = [];
     private paused = false;
     private enemySpawners: EnemySpawner[] = [];
+    private light?: GameObjects.Light;
 
     constructor() {
         super({ key: "MainScene" });
@@ -52,12 +54,15 @@ export class MainScene extends Scene {
             lvl.map.tilesetKey
         );
         const mapLayers = lvl.map.layers.map(layerData => {
-            const mapLayer = map.createStaticLayer(
+            const mapLayer = map.createDynamicLayer(
                 layerData.layerID,
                 tileset,
                 0,
                 0
             );
+            if (lvl.mode.dark) {
+                mapLayer.setPipeline("Light2D");
+            }
             return assign(mapLayer, layerData);
         });
 
@@ -101,7 +106,8 @@ export class MainScene extends Scene {
                 spawnedEnemyData,
                 enemyWeapon,
                 rest.maxConcurrentEnemies,
-                this.enemyBullets
+                this.enemyBullets,
+                lvl.mode.dark
             );
             this.enemySpawners.push(spawner);
             spawner.spawnInterval(rest.enemiesPerWave, rest.waveTimeout);
@@ -205,8 +211,26 @@ export class MainScene extends Scene {
         });
 
         this.addKeyboardInput();
+        this.input.setDefaultCursor(
+            "url(assets/images/crosshair061.png), auto"
+        );
 
         this.events.once(EventType.PlayerDied, () => this.gameOver());
+
+        if (lvl.mode.dark) {
+            this.light = this.lights.addLight(0, 0, 200).setIntensity(1.0);
+            const mouseLight = this.lights
+                .addLight(0, 0, 100)
+                .setIntensity(2.0);
+            this.input.on("pointermove", (pointer: Input.Pointer) => {
+                const { x, y } = this.cameras.main.getWorldPoint(
+                    pointer.x,
+                    pointer.y
+                );
+                mouseLight.setPosition(x, y);
+            });
+            this.lights.enable().setAmbientColor(toHex(Color.DarkGrey));
+        }
     }
 
     public update() {
@@ -220,6 +244,7 @@ export class MainScene extends Scene {
         inactiveEnemies.forEach(e => {
             this.enemies.remove(e, true, true);
         });
+        this.light?.setPosition(this.player.x, this.player.y);
     }
 
     public restart() {

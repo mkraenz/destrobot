@@ -108,9 +108,9 @@ See [.travis.yml](.travis.yml).
 Thanks to [Favicon Generator](https://favicon.io/favicon-generator/) for allowing us to easily create a nice favicon.
 We used the following settings:
 
-- Text: Für
-- Background: rounded
-- Font family: Tillana
-- Font size: 90
-- Font color: #F0F2E8
-- Background color: #537169
+- Text: Des
+- Background: circle
+- Font family: Roboto Condensed
+- Font size: 75
+- Font color: #FFFFFF
+- Background color: #3A3D3C

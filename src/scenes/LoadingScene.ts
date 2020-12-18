@@ -38,8 +38,11 @@ export class LoadingScene extends Scene {
             .image("machine-gun", imgPath("tommy-gun.png"))
             .image("pistol", imgPath("pistol.png"))
             .image("sniper-rifle", imgPath("sniper-rifle.png"))
+            .image("uzi", imgPath("uzi.png"))
             .image("title-background", imgPath("metal-plaque.jpg"))
             .image("skull", imgPath("skull.png"))
+            .image("skull-red-eyes", imgPath("skull-red-eyes.png"))
+            .image("robot", [imgPath("robot.png"), imgPath("robot_n.png")])
             .audio("typing", audioPath("teletype.mp3"))
             .audio("title-ambient", audioPath("sci-fi-sfx-loop-ambient-01.mp3"))
             .audio("electric-buzz", audioPath("electric-buzz.mp3"))
@@ -65,16 +68,12 @@ export class LoadingScene extends Scene {
                 frameWidth: 16,
                 frameHeight: 16,
             })
-            .spritesheet("robot", imgPath("robot.png"), {
-                frameWidth: 28,
-                frameHeight: 32,
-            })
             .spritesheet("fullscreen", imgPath("fullscreen.png"), {
                 frameWidth: 64,
                 frameHeight: 64,
             })
             .tilemapTiledJSON("map", "./assets/maps/map.json")
-            .image("tiles", imgPath("tileset.png"))
+            .image("tiles", [imgPath("tileset.png"), imgPath("tileset_n.png")])
             .atlas(
                 "shapes",
                 particlePath("shapes.png"),

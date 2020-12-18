@@ -56,6 +56,10 @@ export class Enemy extends Physics.Arcade.Sprite {
         }
     }
 
+    public enableDarkMode() {
+        this.setPipeline("Light2D");
+    }
+
     public create() {
         this.setCollideWorldBounds(true);
         this.setBounce(10);

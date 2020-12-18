@@ -6,7 +6,7 @@ export class SliderWithText extends GameObjects.DOMElement {
         super(scene, scene.scale.width / 2, y);
 
         scene.add
-            .text(scene.scale.width / 2 - 10, y, text, TextConfig.md)
+            .text(scene.scale.width / 2 - 10, y, text, TextConfig.mdTitle)
             .setOrigin(1, 0.5);
         this.createFromHTML(Slider(id))
             .setOrigin(0, 0.5)

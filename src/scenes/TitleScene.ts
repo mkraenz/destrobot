@@ -72,11 +72,12 @@ export class TitleScene extends Scene {
                     this.scale.width / 2,
                     bannerStartHeight + 100,
                     CONTROLS,
-                    TextConfig.md
+                    TextConfig.mdTitle
                 )
                 .setOrigin(0.5)
                 .setAlpha(0.6);
 
+            // hard mode
             this.add
                 .image(this.scale.width / 2 + 200, bannerStartHeight, "skull")
                 .setInteractive({ useHandCursor: true })
@@ -84,6 +85,23 @@ export class TitleScene extends Scene {
                     const lvl: ILevel = {
                         ...Level1,
                         player: { ...Level1.player, health: 1, maxHealth: 1 },
+                    };
+                    this.goto("MainScene", MainScene, lvl);
+                });
+
+            // extra hard mode
+            this.add
+                .image(
+                    this.scale.width / 2 + 300,
+                    bannerStartHeight,
+                    "skull-red-eyes"
+                )
+                .setInteractive({ useHandCursor: true })
+                .once("pointerup", () => {
+                    const lvl: ILevel = {
+                        ...Level1,
+                        player: { ...Level1.player, health: 1, maxHealth: 1 },
+                        mode: { ...Level1.mode, dark: true },
                     };
                     this.goto("MainScene", MainScene, lvl);
                 });

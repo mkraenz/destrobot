@@ -22,8 +22,8 @@ export const TextConfig: { [key: string]: Style } = {
     },
     xl: {
         fontFamily: DEFAULT_FONT,
-        fontSize: "32px",
-        color: Color.White,
+        fontSize: "46px",
+        color: Color.DarkGrey,
     },
     lg: {
         fontFamily: DEFAULT_FONT,
@@ -31,6 +31,11 @@ export const TextConfig: { [key: string]: Style } = {
         color: Color.White,
     },
     md: {
+        fontFamily: DEFAULT_FONT,
+        fontSize: "20px",
+        color: Color.DarkGrey,
+    },
+    mdTitle: {
         fontFamily: DEFAULT_FONT,
         fontSize: "16px",
         color: Color.White,

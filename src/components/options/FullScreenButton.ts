@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Input, Scene } from "phaser";
 
 const IMG_KEY = "fullscreen";
 
@@ -9,14 +9,25 @@ export class FullscreenButton extends GameObjects.Image {
             .setInteractive({ useHandCursor: true })
             .setAlpha(0.6);
         scene.add.existing(this);
-        this.on("pointerup", () => {
-            if (scene.scale.isFullscreen) {
-                this.setFrame(0);
-                scene.scale.toggleFullscreen();
-            } else {
-                this.setFrame(1);
-                scene.scale.toggleFullscreen();
-            }
-        });
+        this.on("pointerup", () => this.toggleFullscreen());
+
+        this.addKeyboardShortcut();
+    }
+
+    private toggleFullscreen() {
+        if (this.scene.scale.isFullscreen) {
+            this.setFrame(0);
+            this.scene.scale.toggleFullscreen();
+        } else {
+            this.setFrame(1);
+            this.scene.scale.toggleFullscreen();
+        }
+    }
+
+    private addKeyboardShortcut() {
+        const fullscreenKey = this.scene.input.keyboard.addKey(
+            Input.Keyboard.KeyCodes.F
+        );
+        fullscreenKey.on("up", () => this.toggleFullscreen());
     }
 }

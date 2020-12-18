@@ -14,5 +14,5 @@ export const playBackgroundMusic = (scene: Scene) => {
             loop: true,
             volume: gOptions.musicVolume, // not updating after changing in options due to sound being global
         });
-    }, 20);
+    }, 16);
 };

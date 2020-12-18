@@ -21,8 +21,13 @@ export class EnemySpawner {
         private cfg: IEnemyConfig,
         private weaponCfg: IWeaponConfig | undefined,
         private maxConcurrentEnemies: number,
-        private enemyBullets: Group
+        private enemyBullets: Group,
+        private darkMode: boolean = false
     ) {}
+
+    public enableDarkMode() {
+        this.darkMode = true;
+    }
 
     public spawn(n: number) {
         if (this.reachedMaxConcurrentEnemies()) {
@@ -58,6 +63,9 @@ export class EnemySpawner {
                     },
                     weapon
                 );
+                if (this.darkMode) {
+                    enemy.setPipeline("Light2D");
+                }
                 enemy.create();
                 return enemy;
             });
