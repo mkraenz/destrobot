@@ -7,7 +7,7 @@ services:
   - docker
 
 env:
-  - DOCKER_REPO='a-tiny-city-builder' URL='http://localhost:8080' HEROKU_APP='a-tiny-city-builder-game'
+  - DOCKER_REPO='destrobot' URL='http://localhost:8080' HEROKU_APP='destrobot-game'
 
 before_install:
   # heroku client needed for wait-for-other-heroku-builds

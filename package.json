@@ -1,8 +1,7 @@
 {
-    "name": "a-tiny-city-builder",
+    "name": "destrobot",
     "version": "0.1.0",
-    "description": "A tiny City Builder - a Phaser 3 game in Typescript",
-    "license": "UNLICENSED",
+    "description": "DestroBot - a Phaser 3 game in Typescript",
     "scripts": {
         "prebuild": "del-cli build",
         "build": "webpack --mode production",
