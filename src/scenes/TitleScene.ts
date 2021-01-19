@@ -10,7 +10,7 @@ import { MainScene } from "./MainScene";
 import { OptionsScene } from "./OptionsScene";
 
 const START = "Click to start";
-const VERSION = "v0.1.0";
+const VERSION = "v0.1.1";
 const TITLE = "DestroBot";
 const AUTHOR = "A Game by Mirco Kraenz";
 const FADEOUT = 0;
