@@ -1,7 +1,7 @@
 {
-    "name": "fursorger-server",
+    "name": "destrobot-server",
     "version": "0.0.1",
-    "description": "Fursorger-server - hosting server for the Phaser 3 game in Typescript",
+    "description": "DestroBot-server - hosting server for the Phaser 3 game in Typescript",
     "license": "MIT",
     "scripts": {
         "start": "node index.js"

@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.com/proSingularity/fursorger.svg?branch=master)](https://travis-ci.com/proSingularity/fursorger)
-[![codecov](https://codecov.io/gh/proSingularity/fursorger/branch/master/graph/badge.svg)](https://codecov.io/gh/proSingularity/fursorger)
+[![Build Status](https://travis-ci.com/proSingularity/destrobot.svg?branch=master)](https://travis-ci.com/proSingularity/destrobot)
+[![codecov](https://codecov.io/gh/proSingularity/destrobot/branch/master/graph/badge.svg)](https://codecov.io/gh/proSingularity/destrobot)
 
-# Fursorger
+# DestroBot
 
-**Play now at [prosingularity.github.io/fursorger/](https://prosingularity.github.io/fursorger/).**
+**Play now at [prosingularity.github.io/destrobot/](https://prosingularity.github.io/destrobot/).**
 
 ```
 I am the care taker who
@@ -30,7 +30,7 @@ Assumes you have globally installed
 Clone the git repository
 
 ```bash
-git clone https://github.com/proSingularity/fursorger.git
+git clone https://github.com/proSingularity/destrobot.git
 ```
 
 Install, test and start:
@@ -71,11 +71,11 @@ Check out this cool [how-to](https://github.com/samme/phaser3-faq/wiki#how-do-i-
 
 ## Deployment
 
-Continuous deployment to github pages [https://prosingularity.github.io/fursorger/](https://prosingularity.github.io/fursorger/) is performed on each push to `master`.
+Continuous deployment to github pages [https://prosingularity.github.io/destrobot/](https://prosingularity.github.io/destrobot/) is performed on each push to `master`.
 
-At the same time, a new Docker image is published to [Fursorger's Docker Hub repository](https://cloud.docker.com/u/nonbiri/repository/docker/nonbiri/fursorger).
+At the same time, a new Docker image is published to [DestroBot's Docker Hub repository](https://cloud.docker.com/u/nonbiri/repository/docker/nonbiri/destrobot).
 
-Every branch is automatically deployed to [fursorger-game.herokuapp.com](https://fursorger-game.herokuapp.com).
+Every branch is automatically deployed to [destrobot-game.herokuapp.com](https://destrobot-game.herokuapp.com).
 
 See [.travis.yml](.travis.yml).
 

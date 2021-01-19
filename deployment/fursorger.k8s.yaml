@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fursorger-deployment
+  name: destrobot-deployment
   labels:
-    app: fursorger
+    app: destrobot
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: fursorger
+      app: destrobot
   template:
     metadata:
       labels:
-        app: fursorger
+        app: destrobot
     spec:
       containers:
-        - name: fursorger
-          image: nonbiri/fursorger:latest
+        - name: destrobot
+          image: nonbiri/destrobot:latest
           ports:
             - containerPort: 8080
 ---
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: fursorger-service
+  name: destrobot-service
 spec:
   selector:
-    app: fursorger
+    app: destrobot
   ports:
     - protocol: TCP
       port: 80
