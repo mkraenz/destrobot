@@ -104,9 +104,6 @@ export class PlayerShootingController {
             mouse.x,
             mouse.y
         );
-        return new Vec(
-            clickedWorldPoint.x - this.pos.x,
-            clickedWorldPoint.y - this.pos.y
-        );
+        return clickedWorldPoint.subtract(this.pos);
     }
 }

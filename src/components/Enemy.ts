@@ -1,10 +1,12 @@
 import { random } from "lodash";
 import { GameObjects, Math, Physics, Scene } from "phaser";
+import { DEV } from "../dev-config";
 import { IEnemyKilledEvent } from "../events/Events";
 import { EventType } from "../events/EventType";
 import { gOptions } from "../gOptions";
 import { Color, toHex } from "../styles/Color";
 import { IPoint } from "../utils/IPoint";
+import { dir, pos } from "../utils/math";
 import { IWeapon } from "./IWeapon";
 
 export interface IEnemyConfig {
@@ -66,11 +68,14 @@ export class Enemy extends Physics.Arcade.Sprite {
     }
 
     public move(to: GameObjects.Sprite) {
+        if (DEV.enemy?.disableMove) {
+            return;
+        }
         const Vector = Phaser.Math.Vector2;
         const location = new Vector(this.x, this.y);
         const goal = new Vector(to.x, to.y);
         const direction = goal
-            .add(location.negate())
+            .subtract(location)
             .normalize()
             .scale(this.speed);
         this.setVelocity(direction.x, direction.y);
@@ -114,7 +119,14 @@ export class Enemy extends Physics.Arcade.Sprite {
         }, 200);
     }
 
+    private get pos() {
+        return pos(this);
+    }
+
     private attack() {
+        if (DEV.enemy?.disableAttack) {
+            return;
+        }
         if (!this.weapon) {
             return;
         }
@@ -128,12 +140,8 @@ export class Enemy extends Physics.Arcade.Sprite {
         if (!this.weapon) {
             return;
         }
-        const { x: tx, y: ty } = this.target;
-        const { x, y } = this;
-        const targetPos = new Vec(tx, ty);
-        const pos = new Vec(x, y);
-        const dir = targetPos.subtract(pos).normalize();
-        this.weapon.fire(pos, dir);
+        const direction = dir(this, this.target);
+        this.weapon.fire(this.pos, direction);
     }
 
     private isInAttackRange() {
@@ -142,7 +150,7 @@ export class Enemy extends Physics.Arcade.Sprite {
     }
 
     private dist(other: IPoint = this.target) {
-        return Phaser.Math.Distance.Between(this.x, this.y, other.x, other.y);
+        return this.pos.distance(pos(other));
     }
 
     private isRandomDrop() {
