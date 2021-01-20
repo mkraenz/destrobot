@@ -108,11 +108,25 @@ export const Level1 = {
             reloadTime: 1000,
             fireSoundKey: "sniper-rifle-shot",
         },
+        {
+            name: "Sniper Rifle",
+            damage: 2,
+            bulletSpeed: 200,
+            ttl: 3000,
+            cooldown: 1000,
+            texture: "sniper-rifle",
+            scale: 1,
+            pickUpScale: 0.5,
+            bulletTexture: "bullet2",
+            magazine: 3,
+            reloadTime: 1000,
+            fireSoundKey: "sniper-rifle-shot",
+        },
     ],
     enemies: [
         {
             name: "RoBot",
-            damage: 1,
+            damage: 1, // touch damage
             texture: "robot",
             dropFrequency: 5, // on average, one in dropFrequency kills will drop something
             health: 5,
@@ -123,7 +137,7 @@ export const Level1 = {
         },
         {
             name: "RangeBot",
-            damage: 1,
+            damage: 0,
             texture: "robot",
             dropFrequency: 3, // on average, one in dropFrequency kills will drop something
             health: 5,
@@ -133,6 +147,19 @@ export const Level1 = {
             attackRange: 200,
             weapon: "Pistol",
             tint: Color.Green,
+        },
+        {
+            name: "SnipoBot",
+            damage: 0,
+            texture: "robot",
+            dropFrequency: 1, // on average, one in dropFrequency kills will drop something
+            health: 1,
+            speed: 100,
+            scale: 1,
+            score: 30,
+            attackRange: 600,
+            weapon: "Sniper Rifle",
+            tint: Color.Red,
         },
         {
             name: "FastBot2k",
@@ -171,6 +198,22 @@ export const Level1 = {
         },
     ],
     spawners: [
+        {
+            type: "SnipoBot",
+            x: 250,
+            y: 310,
+            enemiesPerWave: 1,
+            waveTimeout: 5000,
+            maxConcurrentEnemies: 1,
+        },
+        {
+            type: "SnipoBot",
+            x: 1370,
+            y: 1300,
+            enemiesPerWave: 1,
+            waveTimeout: 5000,
+            maxConcurrentEnemies: 1,
+        },
         {
             type: "RoBot",
             x: 250,
