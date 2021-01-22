@@ -66,28 +66,147 @@ export class MainScene extends Scene {
             return assign(mapLayer, layerData);
         });
 
-        this.playerBullets = this.physics.add.group([], {
-            enable: true,
-            active: true,
-        });
         this.player = new Player(this, { ...lvl.player });
+        this.createBulletsAndEnemyGroups();
         new WeaponPickUpHandler(this, lvl.weapons, this.playerBullets);
 
-        this.createCamera(map);
-        this.cameras.main.fadeIn(FADE_IN_TIME);
-        this.cameras.main.once("camerafadeincomplete", () => this.addHud());
+        this.createSpawner();
 
-        this.enemies = this.physics.add.group([], {
+        const playerVsEnemyCollider = this.collidePlayerWithEnemy();
+        const playerVsEnemyBulletsCollider = this.collidePlayerVsEnemyBullets();
+        this.physics.add.collider(this.enemies, this.enemies);
+        this.collideEnemiesWithPlayerBullets();
+        this.collideEntitiesWithMap(mapLayers);
+
+        const movementController = new PlayerMovementController(
+            this,
+            this.player,
+            [playerVsEnemyCollider, playerVsEnemyBulletsCollider],
+            lvl.player.speed
+        );
+        new PlayerLevelController(this, movementController);
+        this.player.setMovementController(movementController);
+
+        const powerups = this.physics.add.group([], {
             active: true,
             enable: true,
-            bounceX: 10,
-            bounceY: 10,
         });
-        this.enemyBullets = this.physics.add.group([], {
-            active: true,
-            enable: true,
+        this.physics.add.collider(this.player, powerups, (player, powerup) => {
+            ((powerup as unknown) as IPowerUp).onCollide();
         });
+        const itemDropper = new ItemDropper(
+            this,
+            powerups,
+            this.levelData.weapons
+        );
 
+        this.testSpawnPickups(itemDropper);
+
+        this.setupCamera(map, this.player);
+        playBackgroundMusic(this);
+        this.addKeyboardInput();
+        if (lvl.mode.dark) {
+            this.enableDarkMode();
+        }
+
+        this.events.once(EventType.PlayerDied, () => this.gameOver());
+    }
+
+    private testSpawnPickups(itemDropper: ItemDropper) {
+        itemDropper.spawnHeart({
+            x: this.player.x + 300,
+            y: this.player.y - 100,
+        });
+        this.levelData.weapons.forEach((weapon, i) => {
+            itemDropper.spawnWeapon({
+                x: this.player.x + 100 + i * 100,
+                y: this.player.y,
+                name: weapon.name,
+                texture: weapon.texture,
+                pickUpScale: weapon.pickUpScale,
+            });
+        });
+    }
+
+    private collideEntitiesWithMap(
+        mapLayers: (Phaser.Tilemaps.DynamicTilemapLayer & {
+            layerID: string;
+            collidePlayer: boolean;
+            collideEnemies: boolean;
+            collideBullets: boolean;
+            collisionProperty?: string;
+        })[]
+    ) {
+        mapLayers.forEach(layer => {
+            if (layer.collideEnemies) {
+                this.physics.add.collider(this.enemies, layer);
+            }
+            if (layer.collidePlayer) {
+                this.physics.add.collider(this.player, layer);
+            }
+            if (layer.collideBullets) {
+                this.physics.add.collider(this.playerBullets, layer, bullet =>
+                    this.playerBullets.remove(bullet, true, true)
+                );
+            }
+            if (layer.collisionProperty) {
+                layer.setCollisionByProperty({
+                    [layer.collisionProperty]: true,
+                });
+            }
+        });
+    }
+
+    private collideEnemiesWithPlayerBullets() {
+        this.physics.add.collider(
+            this.enemies,
+            this.playerBullets,
+            (enemy, bullet) => {
+                const b = bullet as Bullet;
+                b.onHit();
+                (enemy as Enemy).takeDamage(b.damage);
+                this.playerBullets.remove(b, true, true);
+            }
+        );
+    }
+
+    private collidePlayerVsEnemyBullets() {
+        return this.physics.add.collider(
+            this.player,
+            this.enemyBullets,
+            (player, b) => {
+                const bullet = b as Bullet;
+                const hitApplied = this.player.onHit(bullet.damage);
+                if (hitApplied) {
+                    this.cameras.main.shake(
+                        CAMERA_SHAKE_DURATION,
+                        CAMERA_SHAKE_INTENSITY
+                    );
+                }
+                this.enemyBullets.remove(b, true, true);
+            }
+        );
+    }
+
+    private collidePlayerWithEnemy() {
+        return this.physics.add.collider(
+            this.player,
+            this.enemies,
+            (player, e) => {
+                const enemy = e as Enemy;
+                const hitApplied = this.player.onHit(enemy.damage);
+                if (hitApplied) {
+                    this.cameras.main.shake(
+                        CAMERA_SHAKE_DURATION,
+                        CAMERA_SHAKE_INTENSITY
+                    );
+                }
+            }
+        );
+    }
+
+    private createSpawner() {
+        const lvl = this.levelData;
         lvl.spawners.forEach(({ x, y, type, ...rest }) => {
             const spawnedEnemyData = lvl.enemies.find(e => e.name === type);
             if (!spawnedEnemyData) {
@@ -112,125 +231,36 @@ export class MainScene extends Scene {
             this.enemySpawners.push(spawner);
             spawner.spawnInterval(rest.enemiesPerWave, rest.waveTimeout);
         });
+    }
 
-        const playerVsEnemyCollider = this.physics.add.collider(
-            this.player,
-            this.enemies,
-            (player, e) => {
-                const enemy = e as Enemy;
-                const hitApplied = this.player.onHit(enemy.damage);
-                if (hitApplied) {
-                    this.cameras.main.shake(
-                        CAMERA_SHAKE_DURATION,
-                        CAMERA_SHAKE_INTENSITY
-                    );
-                }
-            }
-        );
-        const playerVsEnemyBulletsCollider = this.physics.add.collider(
-            this.player,
-            this.enemyBullets,
-            (player, b) => {
-                const bullet = b as Bullet;
-                const hitApplied = this.player.onHit(bullet.damage);
-                if (hitApplied) {
-                    this.cameras.main.shake(
-                        CAMERA_SHAKE_DURATION,
-                        CAMERA_SHAKE_INTENSITY
-                    );
-                }
-                this.enemyBullets.remove(b, true, true);
-            }
-        );
-        const movementController = new PlayerMovementController(
-            this,
-            this.player,
-            [playerVsEnemyCollider, playerVsEnemyBulletsCollider],
-            lvl.player.speed
-        );
-        new PlayerLevelController(this, movementController);
-        this.player.setMovementController(movementController);
-
-        this.physics.add.collider(this.enemies, undefined as any);
-        this.physics.add.collider(
-            this.enemies,
-            this.playerBullets,
-            (enemy, bullet) => {
-                const b = bullet as Bullet;
-                b.onHit();
-                (enemy as Enemy).takeDamage(b.damage);
-                this.playerBullets.remove(b, true, true);
-            }
-        );
-        mapLayers.forEach(layer => {
-            if (layer.collideEnemies) {
-                this.physics.add.collider(this.enemies, layer);
-            }
-            if (layer.collidePlayer) {
-                this.physics.add.collider(this.player, layer);
-            }
-            if (layer.collideBullets) {
-                this.physics.add.collider(this.playerBullets, layer, bullet =>
-                    this.playerBullets.remove(bullet, true, true)
-                );
-            }
-            if (layer.collisionProperty) {
-                layer.setCollisionByProperty({
-                    [layer.collisionProperty]: true,
-                });
-            }
+    private createBulletsAndEnemyGroups() {
+        this.playerBullets = this.physics.add.group([], {
+            enable: true,
+            active: true,
         });
-
-        const powerups = this.physics.add.group([], {
+        this.enemies = this.physics.add.group([], {
+            active: true,
+            enable: true,
+            bounceX: 10,
+            bounceY: 10,
+        });
+        this.enemyBullets = this.physics.add.group([], {
             active: true,
             enable: true,
         });
-        this.physics.add.collider(this.player, powerups, (player, powerup) => {
-            ((powerup as unknown) as IPowerUp).onCollide();
+    }
+
+    private enableDarkMode() {
+        this.light = this.lights.addLight(0, 0, 200).setIntensity(1.0);
+        const mouseLight = this.lights.addLight(0, 0, 100).setIntensity(2.0);
+        this.input.on("pointermove", (pointer: Input.Pointer) => {
+            const { x, y } = this.cameras.main.getWorldPoint(
+                pointer.x,
+                pointer.y
+            );
+            mouseLight.setPosition(x, y);
         });
-        const itemDropper = new ItemDropper(
-            this,
-            powerups,
-            this.levelData.weapons
-        );
-        playBackgroundMusic(this);
-
-        // test pickUps
-        itemDropper.spawnHeart({
-            x: this.player.x + 300,
-            y: this.player.y - 100,
-        });
-        lvl.weapons.forEach((weapon, i) => {
-            itemDropper.spawnWeapon({
-                x: this.player.x + 100 + i * 100,
-                y: this.player.y,
-                name: weapon.name,
-                texture: weapon.texture,
-                pickUpScale: weapon.pickUpScale,
-            });
-        });
-
-        this.addKeyboardInput();
-        this.input.setDefaultCursor(
-            "url(assets/images/crosshair061.png), auto"
-        );
-
-        this.events.once(EventType.PlayerDied, () => this.gameOver());
-
-        if (lvl.mode.dark) {
-            this.light = this.lights.addLight(0, 0, 200).setIntensity(1.0);
-            const mouseLight = this.lights
-                .addLight(0, 0, 100)
-                .setIntensity(2.0);
-            this.input.on("pointermove", (pointer: Input.Pointer) => {
-                const { x, y } = this.cameras.main.getWorldPoint(
-                    pointer.x,
-                    pointer.y
-                );
-                mouseLight.setPosition(x, y);
-            });
-            this.lights.enable().setAmbientColor(toHex(Color.DarkGrey));
-        }
+        this.lights.enable().setAmbientColor(toHex(Color.DarkGrey));
     }
 
     public update() {
@@ -270,7 +300,7 @@ export class MainScene extends Scene {
         });
     }
 
-    private createCamera(map: Phaser.Tilemaps.Tilemap) {
+    private setupCamera(map: Phaser.Tilemaps.Tilemap, player: Player) {
         this.cameras.main.setZoom(2);
         this.cameras.main.setBounds(
             0,
@@ -285,7 +315,13 @@ export class MainScene extends Scene {
             map.heightInPixels
         );
         this.cameras.main.setDeadzone(100, 75);
-        this.cameras.main.startFollow(this.player);
+        this.cameras.main.startFollow(player);
+        this.cameras.main.fadeIn(FADE_IN_TIME);
+        this.cameras.main.once("camerafadeincomplete", () => this.addHud());
+
+        this.input.setDefaultCursor(
+            "url(assets/images/crosshair061.png), auto"
+        );
     }
 
     private addHud() {

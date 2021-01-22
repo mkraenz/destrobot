@@ -49,7 +49,7 @@ export class OptionsScene extends Scene {
             this.sound.play("electric-buzz", { volume: gOptions.sfxVolume });
         });
 
-        const resumeButton = Button("EXIT");
+        const resumeButton = Button("CONTINUE");
         this.add
             .dom(halfWidth, halfHeight + 215)
             .createFromHTML(resumeButton)
