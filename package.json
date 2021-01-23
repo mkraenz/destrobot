@@ -67,7 +67,6 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged",
             "commit-msg": "commit-message-validator"
         }
     },
