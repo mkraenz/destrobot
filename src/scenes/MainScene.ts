@@ -322,9 +322,7 @@ export class MainScene extends Scene {
         this.cameras.main.fadeIn(FADE_IN_TIME);
         this.cameras.main.once("camerafadeincomplete", () => this.addHud());
 
-        this.input.setDefaultCursor(
-            "url(assets/images/crosshair061.png), auto"
-        );
+        this.input.setDefaultCursor("url(assets/images/crosshair.cur), auto");
     }
 
     private addHud() {

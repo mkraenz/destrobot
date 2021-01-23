@@ -91,6 +91,7 @@ See [.travis.yml](.travis.yml).
 - [Inofficial Phaser Plugins](https://phaserplugins.com/)
 - [Phaser3 Nineslice Plugin](https://github.com/jdotrjs/phaser3-nineslice)
 - [Phaser3 Debug Plugin](https://github.com/samme/phaser-plugin-debug-draw)
+- [Custom Cursor Creator](https://www.cursor.cc/)
 
 ### Generating favicon.ico
 
