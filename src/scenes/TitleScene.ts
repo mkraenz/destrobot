@@ -8,6 +8,7 @@ import { Color } from "../styles/Color";
 import { TextConfig } from "../styles/Text";
 import { MainScene } from "./MainScene";
 import { OptionsScene } from "./OptionsScene";
+import { SceneKey } from "./SceneKeys";
 
 const START = "Click to start";
 const VERSION = "v0.2.0";
@@ -27,7 +28,7 @@ export class TitleScene extends Scene {
 
     constructor() {
         super({
-            key: "TitleScene",
+            key: SceneKey.Title,
         });
     }
 
@@ -86,7 +87,7 @@ export class TitleScene extends Scene {
                         ...Level1,
                         player: { ...Level1.player, health: 1, maxHealth: 1 },
                     };
-                    this.goto("MainScene", MainScene, lvl);
+                    this.goto(SceneKey.Main, MainScene, lvl);
                 });
 
             // extra hard mode
@@ -103,7 +104,7 @@ export class TitleScene extends Scene {
                         player: { ...Level1.player, health: 1, maxHealth: 1 },
                         mode: { ...Level1.mode, dark: true },
                     };
-                    this.goto("MainScene", MainScene, lvl);
+                    this.goto(SceneKey.Main, MainScene, lvl);
                 });
 
             // this.add.particles(
@@ -114,7 +115,7 @@ export class TitleScene extends Scene {
             // );
 
             background.once("pointerup", () =>
-                this.goto("MainScene", MainScene, Level1)
+                this.goto(SceneKey.Main, MainScene, Level1)
             );
             this.setBuzzTimeout();
             new FullscreenButton(this);
@@ -137,7 +138,7 @@ export class TitleScene extends Scene {
         this.cameras.main.once("camerafadeoutcomplete", () => {
             window.clearTimeout(this.electricBuzzTimer);
             this.sound.stopByKey("title-ambient");
-            this.scene.add("OptionsScene", OptionsScene, false);
+            this.scene.add(SceneKey.Options, OptionsScene, false);
             this.scene.add(key, sceneClass, true, initData);
             this.scene.remove(this);
         });

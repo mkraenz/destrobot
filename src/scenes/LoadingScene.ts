@@ -5,6 +5,7 @@ import { Color, toHex } from "../styles/Color";
 import { setDefaultTextStyle } from "../styles/Text";
 import { MainScene } from "./MainScene";
 import { OptionsScene } from "./OptionsScene";
+import { SceneKey } from "./SceneKeys";
 import { TitleScene } from "./TitleScene";
 
 const FADEOUT_TIME = 0;
@@ -14,7 +15,7 @@ export class LoadingScene extends Scene {
     private halfHeight!: number;
 
     constructor() {
-        super({ key: "Loading" });
+        super({ key: SceneKey.Loading });
     }
 
     public preload() {
@@ -130,11 +131,11 @@ export class LoadingScene extends Scene {
 
     private nextScene() {
         if (DEV.startInOptionsScene) {
-            this.scene.add("OptionsScene", OptionsScene, true);
+            this.scene.add(SceneKey.Options, OptionsScene, true);
         } else if (DEV.startInMainScene) {
-            this.scene.add("MainScene", MainScene, true, Level1);
+            this.scene.add(SceneKey.Main, MainScene, true, Level1);
         } else {
-            this.scene.add("TitleScene", TitleScene, true);
+            this.scene.add(SceneKey.Title, TitleScene, true);
         }
         this.scene.remove(this);
     }

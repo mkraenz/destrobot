@@ -18,14 +18,13 @@ import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
 import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
 import { WeaponHud } from "./hud/WeaponHud";
+import { SceneKey } from "./SceneKeys";
 
 type Group = Physics.Arcade.Group;
 
 const FADE_IN_TIME = 0;
 const CAMERA_SHAKE_INTENSITY = 0.005;
 const CAMERA_SHAKE_DURATION = 50;
-
-const OPTIONS = "OptionsScene";
 
 export class MainScene extends Scene {
     private levelData!: ILevel;
@@ -39,7 +38,7 @@ export class MainScene extends Scene {
     private light?: GameObjects.Light;
 
     constructor() {
-        super({ key: "MainScene" });
+        super({ key: SceneKey.Main });
     }
 
     public init(level: ILevel) {
@@ -278,6 +277,11 @@ export class MainScene extends Scene {
     }
 
     public restart() {
+        this.shutdown();
+        this.scene.restart();
+    }
+
+    public shutdown() {
         this.sound.stopAll();
         this.subScenes.forEach(key => this.scene.remove(key));
         this.playerBullets.destroy(true);
@@ -286,7 +290,6 @@ export class MainScene extends Scene {
         this.enemySpawners.forEach(s => s.stop());
         this.children.getAll().forEach(c => c.destroy());
         Object.values(EventType).forEach(event => this.events.off(event));
-        this.scene.restart();
     }
 
     private addKeyboardInput() {
@@ -328,11 +331,11 @@ export class MainScene extends Scene {
         const healthHudData: IHealthHudInitData = {
             player: this.player,
         };
-        this.addSubScene("HealthHud", HealthHud, healthHudData);
-        this.addSubScene("ScoreHud", ScoreHud);
-        this.addSubScene("WeaponHud", WeaponHud);
+        this.addSubScene(SceneKey.HealthHud, HealthHud, healthHudData);
+        this.addSubScene(SceneKey.ScoreHud, ScoreHud);
+        this.addSubScene(SceneKey.WeaponHud, WeaponHud);
         const goalsHudData: GoalsHudInitData = this.levelData.goals;
-        this.addSubScene("GoalsHud", GoalsHud, goalsHudData);
+        this.addSubScene(SceneKey.GoalsHud, GoalsHud, goalsHudData);
     }
 
     private addSubScene<T extends {}>(
@@ -347,7 +350,7 @@ export class MainScene extends Scene {
     private pause() {
         this.subScenes.forEach(scene => this.scene.sleep(scene));
         this.paused = true;
-        this.scene.switch(OPTIONS);
+        this.scene.switch(SceneKey.Options);
     }
 
     private resume() {
@@ -356,6 +359,6 @@ export class MainScene extends Scene {
     }
 
     private gameOver() {
-        this.scene.add("GameOverScene", GameOverScene, true);
+        this.scene.add(SceneKey.GameOver, GameOverScene, true);
     }
 }

@@ -6,11 +6,14 @@ import { BackgroundImage } from "../components/title/BackgroundImage";
 import { gOptions } from "../gOptions";
 import { Color } from "../styles/Color";
 import { TextConfig } from "../styles/Text";
+import { MainScene } from "./MainScene";
+import { SceneKey } from "./SceneKeys";
+import { TitleScene } from "./TitleScene";
 
 const TITLE = "DestroBot";
 
 export class OptionsScene extends Scene {
-    constructor(key = "OptionsScene") {
+    constructor(key = SceneKey.Options) {
         super(key);
     }
 
@@ -55,6 +58,12 @@ export class OptionsScene extends Scene {
             .createFromHTML(resumeButton)
             .addListener("click")
             .on("click", () => this.resumeGame());
+        const exitButton = Button("MAIN MENu");
+        this.add
+            .dom(halfWidth, halfHeight + 285)
+            .createFromHTML(exitButton)
+            .addListener("click")
+            .on("click", () => this.backToTitle());
 
         this.addKeyboardInput();
         new FullscreenButton(this);
@@ -70,7 +79,15 @@ export class OptionsScene extends Scene {
 
     private resumeGame() {
         this.sound.stopByKey("title-ambient");
-        this.scene.switch("MainScene");
+        this.scene.switch(SceneKey.Main);
+    }
+
+    private backToTitle() {
+        const mainScene = this.scene.get(SceneKey.Main);
+        (mainScene as MainScene).shutdown();
+        this.scene.remove(SceneKey.Main);
+        this.scene.add(SceneKey.Title, TitleScene, true);
+        this.scene.remove(this);
     }
 }
 

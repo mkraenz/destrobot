@@ -3,6 +3,7 @@ import { IEnemyKilledEvent } from "../../events/Events";
 import { EventType } from "../../events/EventType";
 import { ILevel } from "../../levels/ILevel";
 import { TextConfig } from "../../styles/Text";
+import { SceneKey } from "../SceneKeys";
 
 interface IKilledEnemies {
     type: string;
@@ -41,7 +42,7 @@ export class GoalsHud extends Scene {
                 ))
         );
 
-        const mainScene = this.scene.get("MainScene");
+        const mainScene = this.scene.get(SceneKey.Main);
         mainScene.events.on(
             EventType.EnemyKilled,
             (data: IEnemyKilledEvent) => {

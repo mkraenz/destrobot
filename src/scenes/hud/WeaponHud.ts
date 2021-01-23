@@ -1,6 +1,7 @@
 import { GameObjects, Scene } from "phaser";
 import { EventType } from "../../events/EventType";
 import { TextConfig } from "../../styles/Text";
+import { SceneKey } from "../SceneKeys";
 
 interface IWeapon {
     magazine: number;
@@ -14,12 +15,12 @@ export class WeaponHud extends Scene {
     private bulletsLeft: number = 0;
     private weaponImage?: GameObjects.Image;
 
-    constructor(key = "WeaponHud") {
+    constructor(key = SceneKey.WeaponHud) {
         super({ key });
     }
 
     public create() {
-        const mainScene = this.scene.get("MainScene");
+        const mainScene = this.scene.get(SceneKey.Main);
         mainScene.events.on(
             EventType.WeaponChanged,
             (data: { weapon: IWeapon }) => {
