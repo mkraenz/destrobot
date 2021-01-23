@@ -2,11 +2,12 @@ import { Scene } from "phaser";
 import { IEnemyKilledEvent } from "../../events/Events";
 import { EventType } from "../../events/EventType";
 import { TextConfig } from "../../styles/Text";
+import { SceneKey } from "../SceneKeys";
 
 export class ScoreHud extends Scene {
     private score = 0;
 
-    constructor(key = "ScoreHud") {
+    constructor(key = SceneKey.ScoreHud) {
         super(key);
     }
 
@@ -19,7 +20,7 @@ export class ScoreHud extends Scene {
                 TextConfig.xl
             )
             .setOrigin(0.5);
-        const mainScene = this.scene.get("MainScene");
+        const mainScene = this.scene.get(SceneKey.Main);
         mainScene.events.on(
             EventType.EnemyKilled,
             (data: IEnemyKilledEvent) => {

@@ -86,7 +86,8 @@ export class Player extends Physics.Arcade.Sprite implements IMovableActor {
 
     /** @returns true if hit applied, else false */
     public onHit(damage: number): boolean {
-        if (this.xWasHit || this.xInvincible) {
+        const noTouchDamageEnemy = damage === 0;
+        if (this.xWasHit || this.xInvincible || noTouchDamageEnemy) {
             return false;
         }
         this.xWasHit = true;

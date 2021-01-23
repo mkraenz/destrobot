@@ -1,6 +1,7 @@
 import { range } from "lodash";
 import { Scene } from "phaser";
-import { Heart } from "./Heart";
+import { SceneKey } from "../SceneKeys";
+import { Heart } from "../../components/hud/Heart";
 
 export interface IHealthHudInitData {
     player: { getHealth(): number; getMaxHealth(): number };
@@ -10,7 +11,7 @@ export class HealthHud extends Scene {
     private player!: IHealthHudInitData["player"];
     private hearts: Heart[] = [];
 
-    constructor(key = "HealthHud") {
+    constructor(key = SceneKey.HealthHud) {
         super({ key });
     }
 

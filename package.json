@@ -22,7 +22,6 @@
         "@types/chai": "^4.2.11",
         "@types/dat.gui": "^0.7.5",
         "@types/file-saver": "^2.0.1",
-        "@types/graphlib": "^2.1.5",
         "@types/lodash": "^4.14.150",
         "@types/mocha": "^7.0.2",
         "@types/react": "^16.9.35",
@@ -62,16 +61,12 @@
     },
     "dependencies": {
         "dat.gui": "^0.7.7",
-        "file-saver": "^2.0.2",
-        "graphlib": "^2.1.8",
-        "lodash": "^4.17.15",
-        "phaser": "~3.23.0",
-        "phaser3-rex-plugins": "^1.1.14",
+        "lodash": "^4.17.20",
+        "phaser": "~3.24.1",
         "uuid": "^8.0.0"
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged",
             "commit-msg": "commit-message-validator"
         }
     },

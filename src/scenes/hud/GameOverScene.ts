@@ -1,6 +1,7 @@
 import { GameObjects, Scene } from "phaser";
 import { Color } from "../../styles/Color";
 import { TextConfig } from "../../styles/Text";
+import { SceneKey } from "../SceneKeys";
 
 const RESTART_TIMEOUT = 10000;
 
@@ -12,13 +13,13 @@ export class GameOverScene extends Scene {
     private timerText!: GameObjects.Text;
     private timer = RESTART_TIMEOUT;
 
-    constructor(key = "GameOverScene") {
+    constructor(key = SceneKey.GameOver) {
         super(key);
     }
 
     public create() {
         setTimeout(() => {
-            const mainScene = this.scene.get("MainScene");
+            const mainScene = this.scene.get(SceneKey.Main);
             ((mainScene as unknown) as IRestartable).restart();
             this.scene.remove(this);
         }, RESTART_TIMEOUT);

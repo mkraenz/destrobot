@@ -5,18 +5,7 @@
 
 **Play now at [prosingularity.github.io/destrobot/](https://prosingularity.github.io/destrobot/).**
 
-```
-I am the care taker who
-tries to keep the dying world alive
-as long as possible
-by traveling to cities,
-redistributing goods among cities,
-and building factories to produce more goods
-```
-
-[Big Hairy Audacious Goal](https://en.wikipedia.org/wiki/Big_Hairy_Audacious_Goal) Number 1.
-
-A phaser3 survival trading game in TypeScript.
+A phaser3 survival top-down shooter game in TypeScript - WITH ROBOTS!
 
 ## Getting started
 
@@ -102,6 +91,7 @@ See [.travis.yml](.travis.yml).
 - [Inofficial Phaser Plugins](https://phaserplugins.com/)
 - [Phaser3 Nineslice Plugin](https://github.com/jdotrjs/phaser3-nineslice)
 - [Phaser3 Debug Plugin](https://github.com/samme/phaser-plugin-debug-draw)
+- [Custom Cursor Creator](https://www.cursor.cc/)
 
 ### Generating favicon.ico
 
