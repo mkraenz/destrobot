@@ -1,3 +1,4 @@
+import { GUI } from "dat.gui";
 import { assign } from "lodash";
 import { GameObjects, Input, Physics, Scene } from "phaser";
 import { Bullet } from "../components/Bullet";
@@ -10,8 +11,10 @@ import { Player } from "../components/Player";
 import { PlayerLevelController } from "../components/PlayerLevelController";
 import { PlayerMovementController } from "../components/PlayerMovementController";
 import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
+import { DEV } from "../dev-config";
 import { EventType } from "../events/EventType";
 import { ILevel } from "../levels/ILevel";
+import { Level2 } from "../levels/Level2";
 import { Color, toHex } from "../styles/Color";
 import { GameOverScene } from "./hud/GameOverScene";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
@@ -43,6 +46,7 @@ export class MainScene extends Scene {
 
     public init(level: ILevel) {
         this.levelData = Object.freeze(level);
+        console.log(this.levelData);
     }
 
     public create(): void {
@@ -109,6 +113,14 @@ export class MainScene extends Scene {
         }
 
         this.events.once(EventType.PlayerDied, () => this.gameOver());
+
+        if (DEV.showDebugGui) {
+            this.debugGui();
+        }
+    }
+    private debugGui() {
+        const gui = new GUI();
+        gui.add(this, "startLevel2");
     }
 
     private testSpawnPickups(itemDropper: ItemDropper) {
@@ -276,9 +288,9 @@ export class MainScene extends Scene {
         this.light?.setPosition(this.player.x, this.player.y);
     }
 
-    public restart() {
+    public restart(level?: ILevel) {
         this.shutdown();
-        this.scene.restart();
+        this.scene.restart(level);
     }
 
     public shutdown() {
@@ -358,5 +370,9 @@ export class MainScene extends Scene {
 
     private gameOver() {
         this.scene.add(SceneKey.GameOver, GameOverScene, true);
+    }
+
+    public startLevel2() {
+        this.restart(Level2);
     }
 }
