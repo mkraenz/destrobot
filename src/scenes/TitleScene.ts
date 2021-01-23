@@ -2,6 +2,7 @@ import { random } from "lodash";
 import { GameObjects, Scene } from "phaser";
 import { FullscreenButton } from "../components/options/FullScreenButton";
 import { BackgroundImage } from "../components/title/BackgroundImage";
+import { DEV } from "../dev-config";
 import { ILevel } from "../levels/ILevel";
 import { Level1 } from "../levels/Level1";
 import { Color } from "../styles/Color";
@@ -115,7 +116,7 @@ export class TitleScene extends Scene {
             // );
 
             background.once("pointerup", () =>
-                this.goto(SceneKey.Main, MainScene, Level1)
+                this.goto(SceneKey.Main, MainScene, DEV.startLevel || Level1)
             );
             this.setBuzzTimeout();
             new FullscreenButton(this);
