@@ -1,7 +1,7 @@
 import { range } from "lodash";
 import { Scene } from "phaser";
 import { SceneKey } from "../SceneKeys";
-import { Heart } from "./Heart";
+import { Heart } from "../../components/hud/Heart";
 
 export interface IHealthHudInitData {
     player: { getHealth(): number; getMaxHealth(): number };
