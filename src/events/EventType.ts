@@ -7,5 +7,6 @@ export enum EventType {
     AmmoCollected = "ammo-collected",
     DropItem = "drop-item",
     EnemyKilled = "enemy-killed",
-    PlayerDied = "player-diedd",
+    PlayerDied = "player-died",
+    LevelComplete = "level-complete",
 }

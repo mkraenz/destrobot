@@ -14,13 +14,13 @@ import { WeaponPickUpHandler } from "../components/WeaponPickUpHandler";
 import { DEV } from "../dev-config";
 import { EventType } from "../events/EventType";
 import { ILevel } from "../levels/ILevel";
-import { Level2 } from "../levels/Level2";
 import { Color, toHex } from "../styles/Color";
 import { GameOverScene } from "./hud/GameOverScene";
 import { GoalsHud, GoalsHudInitData } from "./hud/GoalsHud";
 import { HealthHud, IHealthHudInitData } from "./hud/HealthHud";
 import { ScoreHud } from "./hud/ScoreHud";
 import { WeaponHud } from "./hud/WeaponHud";
+import { LevelSelector } from "./LevelSelector";
 import { SceneKey } from "./SceneKeys";
 
 type Group = Physics.Arcade.Group;
@@ -46,7 +46,6 @@ export class MainScene extends Scene {
 
     public init(level: ILevel) {
         this.levelData = Object.freeze(level);
-        console.log(this.levelData);
     }
 
     public create(): void {
@@ -118,6 +117,11 @@ export class MainScene extends Scene {
             this.debugGui();
         }
     }
+
+    public isRunningLevel(level: ILevel) {
+        return this.levelData === level;
+    }
+
     private debugGui() {
         const gui = new GUI();
         gui.add(this, "startLevel2");
@@ -288,6 +292,9 @@ export class MainScene extends Scene {
         this.light?.setPosition(this.player.x, this.player.y);
     }
 
+    /**
+     * Phaser will call `this.init(level)` with `level` from `this.scene.restart(level)`
+     */
     public restart(level?: ILevel) {
         this.shutdown();
         this.scene.restart(level);
@@ -341,6 +348,7 @@ export class MainScene extends Scene {
         const healthHudData: IHealthHudInitData = {
             player: this.player,
         };
+        this.addSubScene(SceneKey.LevelSelector, LevelSelector);
         this.addSubScene(SceneKey.HealthHud, HealthHud, healthHudData);
         this.addSubScene(SceneKey.ScoreHud, ScoreHud);
         this.addSubScene(SceneKey.WeaponHud, WeaponHud);
@@ -370,9 +378,5 @@ export class MainScene extends Scene {
 
     private gameOver() {
         this.scene.add(SceneKey.GameOver, GameOverScene, true);
-    }
-
-    public startLevel2() {
-        this.restart(Level2);
     }
 }

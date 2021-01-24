@@ -16,7 +16,7 @@ export type GoalsHudInitData = ILevel["goals"];
 export class GoalsHud extends Scene {
     private killedEnemies!: IKilledEnemies[];
 
-    constructor(key = "GoalsHud") {
+    constructor(key = SceneKey.GoalsHud) {
         super(key);
     }
 
@@ -72,7 +72,17 @@ export class GoalsHud extends Scene {
                     TextConfig.title
                 )
                 .setOrigin(0.5);
+
+            this.time.addEvent({
+                callback: () => this.emitLevelComplete(),
+                delay: 3000,
+            });
         }
+    }
+
+    private emitLevelComplete() {
+        const mainScene = this.scene.get(SceneKey.Main);
+        mainScene.events.emit(EventType.LevelComplete);
     }
 }
 

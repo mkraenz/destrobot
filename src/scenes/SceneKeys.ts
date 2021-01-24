@@ -1,8 +1,9 @@
 export enum SceneKey {
+    Loading = "Loading",
+    Title = "Title",
     Main = "Main",
     Options = "Options",
-    Title = "Title",
-    Loading = "Loading",
+    LevelSelector = "LevelSelector",
     GoalsHud = "GoalsHud",
     GameOver = "GameOverHud",
     HealthHud = "HealthHud",

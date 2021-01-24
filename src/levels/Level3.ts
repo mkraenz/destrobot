@@ -1,7 +1,7 @@
 import { Color } from "../styles/Color";
 
-export const Level2 = {
-    name: "2",
+export const Level3 = {
+    name: "3",
     mode: {
         dark: false,
     },
@@ -170,7 +170,7 @@ export const Level2 = {
         killEnemies: [
             {
                 type: "SnipoBot",
-                amount: 1,
+                amount: 2,
             },
         ],
     },

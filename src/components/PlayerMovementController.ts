@@ -1,12 +1,13 @@
 import { Input, Physics, Scene } from "phaser";
 import { IMovableActor } from "./IMovableActor";
+import { IPlayerController } from "./IPlayerController";
 
 type Key = Input.Keyboard.Key;
 const DODGE_TIMEOUT = 250;
 const DODGE_COOLDOWN = 1000;
 const DODGE_SPEED_UP_FACTOR = 2;
 
-export class PlayerMovementController {
+export class PlayerMovementController implements IPlayerController {
     private keys: {
         up: Key;
         left: Key;
